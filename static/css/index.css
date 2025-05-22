@@ -155,6 +155,39 @@ footer {
     font-weight: bold;
 }
 
+/* ========== NAV-TABS como en el diseño ========== */
+.nav-tabs {
+    width: 100%;
+    background-color: #002b80; 
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border-top: 2px solid #001f5c;
+    border-bottom: 2px solid #001f5c;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    background-color: #004080;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    border-right: 1px solid #003066;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.tab-link:first-child {
+    border-left: 1px solid #003066;
+}
+
+.tab-link:hover {
+    background-color: #0055aa;
+}
+
+
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 480px) {

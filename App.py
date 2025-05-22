@@ -16,6 +16,23 @@ db.init_app(app)
 def index():
     return render_template('index.html')
 
+@app.route("/servicios")
+def servicios():
+    return render_template("servicios.html")
+
+@app.route("/clientes")
+def clientes():
+    return render_template("clientes.html")
+
+@app.route("/productos")
+def productos():
+    return render_template("productos.html")
+
+@app.route("/contacto")
+def contacto():
+    return render_template("contacto.html")
+
+
 if __name__ == "__main__":
     app.run()
     
