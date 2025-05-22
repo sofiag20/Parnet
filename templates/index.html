@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PARNET</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    </head>
+<body>
+
+<header>
+    <div class="header-wrapper">
+        <a href="{{ url_for('index') }}" class="logo-link">
+            <img src="/static/img/logo.png" alt="Logotipo" class="logo-img" />
+        </a>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+</header>
+
+<!-- Marquesina dentro del header -->
+<div class="marquee-container">
+    <div class="marquee">
+    Bienvenido a <strong>PARNET Ingeniería S.A. de C.V.</strong> Continuamente actualizamos el Sitio.
+    Revisa nuestros estándares de calidad <span class="destacado">ISO 9000</span>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <nav class="sidebar" id="sidebar">
+        <a href="#" class="menu-button">Certificaciones</a>
+        <a href="#" class="menu-button">Telecomunicaciones</a>
+        <a href="#" class="menu-button">Redes Eléctricas</a>
+        <a href="#" class="menu-button">Circuito Cerrado de TV</a>
+    </nav>
+
+    <main class="main-content">
+        <h2>Contenido Principal</h2>
+        <p>Este contenido se adapta según el tamaño de pantalla.</p>
+    </main>
+</div>
+
+<footer>
+    &copy; 2025 Mi Sitio Web
+</footer>
+
+<script>
+    function toggleMenu() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("active");
+    }
+</script>
+
+</body>
+</html>
