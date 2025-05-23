@@ -39,30 +39,29 @@
 
 
 
+<!-- CONTENIDO GENERAL -->
 <div class="content-wrapper">
 
     <!-- Menú lateral izquierdo (sidebar) -->
     <nav class="sidebar" id="sidebar">
 
-        <!-- Bloque de Noticias arriba -->
+        <!-- Bloque de Noticias rotativas arriba -->
         <div class="noticias-box">
             <div class="noticias-header">
                 <img src="{{ url_for('static', filename='img/mundo.png') }}" alt="Icono Noticias" class="noticias-icon">
                 <span class="noticias-title">Noticias</span>
             </div>
 
-            {% for noticia in noticias %}
-            <div class="noticia-item">
-                <p><strong>{{ noticia.titulo }}</strong><br>
-                {{ noticia.nota[:60] }}... <a href="#">[Leer más]</a></p>
+            <div class="noticia-item" id="noticia-rotativa">
+                <p><strong>{{ noticias[0].titulo }}</strong><br>
+                {{ noticias[0].nota[:60] }}... <a href="#">[Leer más]</a></p>
             </div>
-            {% endfor %}
         </div>
 
         <div class="noticias-boton">
                 <a href="#" class="panel-button">Control Panel PARNET</a>
         </div>
-        <!-- Botones debajo de las noticias -->
+        <!-- Botones debajo -->
         <a href="#" class="menu-button">Certificaciones</a>
         <a href="#" class="menu-button">Telecomunicaciones</a>
         <a href="#" class="menu-button">Redes Eléctricas</a>
@@ -74,7 +73,6 @@
         <h2>Contenido Principal</h2>
         <p>Este contenido se adapta según el tamaño de pantalla.</p>
     </main>
-
 </div>
 
 
@@ -88,6 +86,21 @@
         sidebar.classList.toggle("active");
     }
 </script>
+
+<script>
+    window.noticiasData = [
+        {% for noticia in noticias %}
+        {
+            titulo: `{{ noticia.titulo | escape }}`,
+            nota: `{{ noticia.nota[:60] | escape }}...`
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+</script>
+
+<script src="{{ url_for('static', filename='js/noticias.js') }}"></script>
+
+
 
 </body>
 </html>
