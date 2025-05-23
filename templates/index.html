@@ -40,18 +40,43 @@
 
 
 <div class="content-wrapper">
+
+    <!-- Menú lateral izquierdo (sidebar) -->
     <nav class="sidebar" id="sidebar">
+
+        <!-- Bloque de Noticias arriba -->
+        <div class="noticias-box">
+            <div class="noticias-header">
+                <img src="{{ url_for('static', filename='img/mundo.png') }}" alt="Icono Noticias" class="noticias-icon">
+                <span class="noticias-title">Noticias</span>
+            </div>
+
+            {% for noticia in noticias %}
+            <div class="noticia-item">
+                <p><strong>{{ noticia.titulo }}</strong><br>
+                {{ noticia.nota[:60] }}... <a href="#">[Leer más]</a></p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="noticias-boton">
+                <a href="#" class="panel-button">Control Panel PARNET</a>
+        </div>
+        <!-- Botones debajo de las noticias -->
         <a href="#" class="menu-button">Certificaciones</a>
         <a href="#" class="menu-button">Telecomunicaciones</a>
         <a href="#" class="menu-button">Redes Eléctricas</a>
         <a href="#" class="menu-button">Circuito Cerrado de TV</a>
     </nav>
 
+    <!-- Contenido principal -->
     <main class="main-content">
         <h2>Contenido Principal</h2>
         <p>Este contenido se adapta según el tamaño de pantalla.</p>
     </main>
+
 </div>
+
 
 <footer>
     &copy; 2025 Mi Sitio Web

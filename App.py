@@ -1,20 +1,20 @@
-from flask import Flask,render_template
-from models.Database import Database # Importa el Singleton
+from flask import Flask, render_template
+from models.Database import Database
+from models.Noticia import Noticia
 
 app = Flask(__name__)
-
-# Configura la conexión a tu base de datos
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Obtén la instancia única de SQLAlchemy y asóciala a la app Flask
-db = Database.get_instance()
-db.init_app(app)
-
+# ✅ Aquí sí se inicializa la app con Singleton correctamente
+db = Database.get_instance(app)
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    noticias = Noticia.query.order_by(Noticia.id_notice.desc()).limit(5).all()
+    return render_template("index.html", noticias=noticias)
+
+
 
 @app.route("/servicios")
 def servicios():
@@ -32,9 +32,8 @@ def productos():
 def contacto():
     return render_template("contacto.html")
 
-
 if __name__ == "__main__":
     app.run()
-    
+
 
 
