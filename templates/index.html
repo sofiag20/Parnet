@@ -27,7 +27,8 @@
 
 <!-- Debajo de la marquesina -->
 <nav class="nav-tabs">
-    <a href="{{ url_for('index') }}" class="tab-link">Página Principal</a>
+    <a href="#" onclick="cargarContenido('principal')" class="tab-link">Página Principal</a>
+
     <a href="#" class="tab-link">¿Quiénes Somos?</a>
     <a href="#" class="tab-link">Clientes</a>
     <a href="{{ url_for('servicios') }}" class="tab-link">Servicios</a>
@@ -148,6 +149,8 @@
 <script src="{{ url_for('static', filename='js/noticias.js') }}"></script>
 <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/conectados.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contenido.js') }}"></script>
+
 
 
 

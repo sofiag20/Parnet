@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/principal.css') }}">
+<!-- Carrusel de imágenes -->
+<div class="carousel-container">
+    <div class="carousel-slide active">
+        <img src="/static/img/imagen1.png" alt="Banner 1">
+    </div>
+    <div class="carousel-slide">
+        <img src="/static/img/banner2.jpg" alt="Banner 2">
+    </div>
+    <div class="carousel-slide">
+        <img src="/static/img/banner3.jpg" alt="Banner 3">
+    </div>
+    <button class="carousel-btn prev" onclick="moverSlide(-1)">❮</button>
+    <button class="carousel-btn next" onclick="moverSlide(1)">❯</button>
+</div>
+
+<!-- Sección informativa -->
+<section class="info-section">
+    <h2 class="titulo">¿Cuál es el objetivo principal de PARNET?</h2>
+    <div class="info-block">
+        <img src="/static/img/Oficina.png" alt="Oficina" class="info-img">
+        <p>
+        Nuestra empresa tiene como objetivo suministrar Soluciones Integrales en Telecomunicaciones (voz y datos),
+        eléctricas que resuelvan las necesidades empresariales con productos, aplicaciones, servicios y tecnología
+        de punta, lo cual simplifique el trabajo al usuario final obteniendo una comunicación eficiente, de alta
+        confiabilidad, incrementando los índices de productividad y competitividad de su empresa y del personal
+        de la misma.<br><br>
+        Las fibras ópticas y los sistemas de comunicaciones, constituyen el desarrollo tecnológico más importante
+        de los últimos años.
+        </p>
+    </div>
+
+    <h2 class="titulo">¿Hay buena energía dentro de su empresa?</h2>
+    <div class="info-block">
+        <img src="/static/img/Rack.png" alt="Rack" class="info-img">
+        <p>
+        Normalmente, las personas y los encargados de la informática en las empresas ven en los virus a los principales
+        enemigos a combatir en aras de no perder información del negocio. No obstante, según la empresa de seguridad
+        energética APC, el 60 por ciento de los daños de los equipos y la desaparición de datos en los computadores
+        es ocasionada por problemas asociados a la energía eléctrica.<br><br>
+        Picos, sobrevoltajes, transientes, interrupciones, apagones y distorsiones, entre otros, son algunos de los males
+        más comunes que sufre la energía eléctrica y que pueden mandar a la basura todas las inversiones que usted
+        o su empresa han hecho en computadoras, televisores planos, teatros caseros, etc.
+        </p>
+    </div>
+
+    <p class="software-intro">
+    Con el afán de brindarle soluciones integrales, Parnet Ingeniería le ofrece desarrollo de software tales como:
+    </p>
+
+    <ul class="software-list">
+        <li>Aplicaciones a la Medida</li>
+        <li>Aplicaciones Web</li>
+        <li>Aplicaciones Cliente-Servidor</li>
+        <li>Desarrollo de Aplicaciones Multimedia</li>
+        <li>Software de Nómina para el control total de sus empleados</li>
+        <li>Aplicaciones móviles para celulares y PDA's</li>
+        <li>Bases de Datos</li>
+    </ul>
+</section>

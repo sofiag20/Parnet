@@ -47,6 +47,13 @@ def manejar_desconexion():
     usuarios_conectados.discard(request.sid)
     emit('actualizar_conectados', len(usuarios_conectados), broadcast=True)
 
+
+@app.route("/contenido/principal")
+def contenido_principal():
+    return render_template("fragmentos/principal.html")
+
+
+
 @app.route("/servicios")
 def servicios():
     return render_template("servicios.html")
