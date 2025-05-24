@@ -56,16 +56,55 @@
                 <p><strong>{{ noticias[0].titulo }}</strong><br>
                 {{ noticias[0].nota[:60] }}... <a href="#">[Leer más]</a></p>
             </div>
+            <div class="noticias-boton">
+                <a href="#" class="panel-button">Control Panel PARNET</a>
+            </div>
         </div>
 
         <div class="noticias-boton">
-                <a href="#" class="panel-button">Control Panel PARNET</a>
+            <div class="menu-header">Áreas PARNET</div>
+            <a href="#" class="menu-button">Certificaciones</a>
+            <a href="#" class="menu-button">Telecomunicaciones</a>
+            <a href="#" class="menu-button">Redes Eléctricas</a>
+            <a href="#" class="menu-button">Circuito Cerrado de TV</a>
+            <a href="#" class="menu-button">Corriente Regulada</a>
+            <a href="#" class="menu-button">Data Centers</a>
+            <a href="#" class="menu-button">Fibra Óptica</a>
+            <a href="#" class="menu-button">Cables Estructurales</a>
+            <a href="#" class="menu-button">Pólizas</a>
+            <a href="#" class="menu-button">Outsourcing</a>
+            <a href="#" class="menu-button">Administración</a>
         </div>
-        <!-- Botones debajo -->
-        <a href="#" class="menu-button">Certificaciones</a>
-        <a href="#" class="menu-button">Telecomunicaciones</a>
-        <a href="#" class="menu-button">Redes Eléctricas</a>
-        <a href="#" class="menu-button">Circuito Cerrado de TV</a>
+
+        <!-- Sección de Marcas y Proveedores -->
+        <div class="proveedores-box">
+            <div class="proveedores-header">Marcas y Proveedores</div>
+
+            <div class="proveedor-item">
+                <strong class="proveedor-destacado">PANDUIT™</strong> es líder mundial en el diseño y fabricación de productos para cableado y comunicaciones.
+                <a href="#">[Leer más...]</a>
+            </div>
+
+            <div class="proveedor-item">
+                <strong class="proveedor-destacado cisco">Cisco Systems</strong> es líder mundial en redes para Internet.
+                <a href="#">[Leer más...]</a>
+            </div>
+        </div>
+
+        <div class="visitas-box">
+        <div class="contador-item">
+            <img src="{{ url_for('static', filename='img/Usuarios.png') }}" alt="Usuarios conectados">
+            <span>Conectados: <span id="onlineCount">0</span></span>
+        </div>
+        <div class="contador-item">
+            <img src="{{ url_for('static', filename='img/home.png') }}" alt="Visitas">
+            <span>Visitas: {{ visitas }}</span>
+        </div>
+        <div class="copyright-text">
+        Copyright 2025
+        </div>
+        </div>
+
     </nav>
 
     <!-- Contenido principal -->
@@ -77,7 +116,20 @@
 
 
 <footer>
-    &copy; 2025 Mi Sitio Web
+    <div class="footer-menu">
+        <div class="footer-links">
+        <a href="{{ url_for('index') }}">Página Principal</a> |
+        <a href="#">¿Quiénes Somos?</a> |
+        <a href="{{ url_for('clientes') }}">Clientes</a> |
+        <a href="{{ url_for('servicios') }}">Servicios</a> |
+        <a href="{{ url_for('productos') }}">Productos</a> |
+        <a href="#">Casos De Éxito</a> |
+        <a href="{{ url_for('contacto') }}">Contacto</a> |
+        <a href="#">Soporte</a>
+        </div>
+        <img src="{{ url_for('static', filename='img/conector.png') }}" alt="Globo" class="footer-globe">
+    </div>
+
 </footer>
 
 <script>
@@ -88,17 +140,16 @@
 </script>
 
 <script>
-    window.noticiasData = [
-        {% for noticia in noticias %}
-        {
-            titulo: `{{ noticia.titulo | escape }}`,
-            nota: `{{ noticia.nota[:60] | escape }}...`
-        }{% if not loop.last %},{% endif %}
-        {% endfor %}
-    ];
+    window.noticiasData = {{ noticias | tojson }};
 </script>
 
+
+
 <script src="{{ url_for('static', filename='js/noticias.js') }}"></script>
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/conectados.js') }}"></script>
+
+
 
 
 

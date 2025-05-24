@@ -89,25 +89,96 @@ header {
 }
 
 /* ========== BOTONES DEL MENÚ ========== */
+.menu-header {
+    width: 220px;
+    margin: 0 auto 10px;
+    background: linear-gradient(to bottom, #1d61b3, #0d2f78);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 6px;
+    border-radius: 4px;
+    text-shadow: 1px 1px 2px #000;
+}
+
 .menu-button {
     display: block;
-    width: 127px;
-    height: 23px;
+    width: 220px;
+    height: 28px;
+    margin: 5px auto;
     background-image: url('/static/img/btn_menu_left.png');
     background-size: cover;
-    color: rgb(23, 7, 245);
-    font-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    color: #003399;
+    font-size: 12px;
+    font-weight: bold;
     font-family: "Times New Roman", Times, serif;
     text-align: center;
-    line-height: 23px;
+    line-height: 28px;
     text-decoration: none;
-    margin-bottom: 0.5px;
-    transition: opacity 0.3s ease;
+    text-shadow: 0 1px 0 #fff;
+
+    border: none;
+    border-radius: 5px;
+    transition: transform 0.2s, opacity 0.3s ease;
 }
 
 .menu-button:hover {
-    opacity: 0.8;
+    opacity: 0.9;
+    transform: scale(1.02);
+    color: #000066;
 }
+
+/* ========== MARCAS Y PROVEEDORES========== */
+.proveedores-box {
+    background: linear-gradient(to bottom, #003377, #004fa3);
+    color: white;
+    padding: 10px;
+    width: 220px;
+    margin: 15px auto;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.proveedores-header {
+    background: linear-gradient(to bottom, #3366cc, #003d99);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    padding: 6px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.proveedor-item {
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+}
+
+.proveedor-destacado {
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.proveedor-destacado.cisco {
+    color: #00ccff;
+}
+
+.proveedor-item a {
+    color: #ccccff;
+    text-decoration: underline;
+    font-size: 12px;
+}
+
+
 
 /* ========== MAIN CONTENT ========== */
 .main-content {
@@ -118,7 +189,7 @@ header {
 
 /* ========== FOOTER ========== */
 footer {
-    background-color: #222;
+    /*background-color: #222;*/
     color: white;
     padding: 1rem;
     text-align: center;
@@ -213,6 +284,9 @@ footer {
     color: white;
     border-radius: 5px;
     margin-bottom: 15px;
+    width: 220px; /* 👈 ancho fijo para alinear con los botones */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .noticias-header {
@@ -263,6 +337,72 @@ footer {
     background-color: #0055cc;
 }
 
+/* ========== CONTADOR ========== */
+.visitas-box {
+    background: linear-gradient(to bottom, #003366, #004d99);
+    color: white;
+    padding: 10px;
+    width: 220px;
+    margin: 15px auto;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.contador-item {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.contador-item img {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(1px 1px 1px #000);
+}
+
+.contador-item span {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* ========== FOOTER ========== */
+.footer-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, #004080, #002f5c);
+    padding: 10px 20px;
+    color: white;
+    border-top: 1px solid #001f3f;
+    font-size: 14px;
+}
+
+.footer-links {
+    flex: 1;
+}
+
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 5px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-globe {
+    width: 42px;
+    height: auto;
+}
+
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 480px) {
@@ -289,7 +429,7 @@ footer {
         width: 100%;
     }
 
-    .hamburger {
+    .menu-icon {
         display: block;
         font-size: 1.5rem;
         color: black;
@@ -299,3 +439,4 @@ footer {
         top: -25px;
     }
 }
+

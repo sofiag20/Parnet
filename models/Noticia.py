@@ -9,4 +9,12 @@ class Noticia(db.Model):
     titulo = db.Column(db.String(150), nullable=False)
     nota = db.Column(db.Text, nullable=False)
 
+    def to_dict(self):
+        return {
+            "id": self.id_notice,
+            "titulo": self.titulo,
+            "nota": self.nota
+        }
+
+
 
