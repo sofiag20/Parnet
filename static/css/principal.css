@@ -42,6 +42,7 @@
   background-color: rgba(0,0,0,0.6);
 }
 
+
 /* ========== SECCIÓN INFORMATIVA ========== */
 .info-section {
   padding: 30px 20px;
@@ -67,10 +68,18 @@
 }
 
 .info-img {
-  width: 220px;
+  width: 300px;
+  max-width: 100%;
   border-radius: 4px;
   border: 2px solid #fff;
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+.info-block p {
+  flex: 1;
+  min-width: 250px;
+  text-align: justify;
 }
 
 /* INTRODUCCIÓN SOFTWARE */
@@ -87,6 +96,7 @@
   list-style-type: square;
   font-size: 15px;
   color: #ffffff;
+  padding-bottom: 30px;
 }
 
 /* ========== RESPONSIVE ========== */
@@ -104,5 +114,8 @@
   .carousel-btn {
     font-size: 20px;
   }
-}
 
+  .info-block p {
+    text-align: left;
+  }
+}

@@ -3,7 +3,11 @@ function cargarContenido(nombre) {
         .then(response => response.text())
         .then(html => {
             const contenedor = document.querySelector(".main-content");
-            if (contenedor) contenedor.innerHTML = html;
+            if (contenedor) {
+                contenedor.innerHTML = html;
+                inicializarCarrusel(); // ✅ después de cargar contenido
+            }
         })
-        .catch(error => console.error("Error cargando contenido:", error));
+    .catch(error => console.error("Error cargando contenido:", error));
 }
+
