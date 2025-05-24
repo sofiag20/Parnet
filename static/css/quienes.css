@@ -1,0 +1,36 @@
+.quienes-somos {
+    padding: 30px 20px;
+    background-color: #003366;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.quienes-title {
+    font-size: 24px;
+    color: #00ccff;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.quienes-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.quienes-img {
+    width: 300px;
+    max-width: 100%;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+.quienes-text {
+    max-width: 600px;
+    font-size: 15px;
+    line-height: 1.6;
+    text-align: justify;
+}

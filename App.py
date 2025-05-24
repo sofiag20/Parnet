@@ -52,6 +52,14 @@ def manejar_desconexion():
 def contenido_principal():
     return render_template("fragmentos/principal.html")
 
+@app.route("/quienes")
+def quienes():
+    return render_template("fragmentos/quienes.html")
+
+
+@app.route("/clientes")
+def clientes():
+    return render_template("fragmentos/clientes.html")
 
 
 
@@ -59,9 +67,6 @@ def contenido_principal():
 def servicios():
     return render_template("servicios.html")
 
-@app.route("/clientes")
-def clientes():
-    return render_template("clientes.html")
 
 @app.route("/productos")
 def productos():

@@ -27,10 +27,12 @@
 
 <!-- Debajo de la marquesina -->
 <nav class="nav-tabs">
-    <a href="#" onclick="cargarContenido('principal')" class="tab-link">Página Principal</a>
+    <a href="#" onclick="cargarContenido('/contenido/principal')" class="tab-link">Página Principal</a>
+    <a href="#" onclick="cargarContenido('/quienes')" class="tab-link">¿Quiénes Somos?</a>
+    <a href="#" onclick="cargarContenido('/clientes')" class="tab-link">Clientes</a>
 
-    <a href="#" class="tab-link">¿Quiénes Somos?</a>
-    <a href="#" class="tab-link">Clientes</a>
+
+
     <a href="{{ url_for('servicios') }}" class="tab-link">Servicios</a>
     <a href="{{ url_for('productos') }}" class="tab-link">Productos</a>
     <a href="#" class="tab-link">Casos De Éxito</a>
@@ -109,9 +111,10 @@
     </nav>
 
     <!-- Contenido principal -->
-    <main class="main-content">
-    <!-- Aquí se cargará el contenido dinámico -->
+    <main class="main-content" id="contenido">
+    <!-- Aquí se carga el contenido con JS -->
     </main>
+
 
 </div>
 
@@ -156,9 +159,10 @@
 <!-- 🔽 Esto se ejecuta automáticamente al abrir la página -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        cargarContenido("principal");
+    cargarContenido('/contenido/principal');
     });
 </script>
+
 
 
 

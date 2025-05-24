@@ -1,0 +1,46 @@
+/* ========== CLIENTES ========== */
+.clientes-section {
+    padding: 30px 20px;
+    background-color: #003366;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.clientes-title {
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: #00ccff;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.clientes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.clientes-grid img {
+    width: 140px;
+    height: auto;
+    border-radius: 6px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    background-color: white;
+    padding: 10px;
+}
+
+.clientes-grid img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 600px) {
+    .clientes-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
