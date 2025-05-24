@@ -153,7 +153,12 @@
 <script src="{{ url_for('static', filename='js/carrusel.js') }}"></script>
 
 
-
+<!-- 🔽 Esto se ejecuta automáticamente al abrir la página -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarContenido("principal");
+    });
+</script>
 
 
 
