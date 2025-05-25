@@ -34,9 +34,6 @@ def index():
 
     return render_template("index.html", noticias=noticias_dict, visitas=visita.total)
 
-# ==========================
-# Socket.IO: Conectados en tiempo real
-# ==========================
 
 @socketio.on('connect')
 def manejar_conexion():
@@ -77,16 +74,35 @@ def productos():
 def contacto():
     return render_template("contacto.html")
 
-@app.route("/login", methods=["GET", "POST"])
+
+
+@app.route("/contenido/login")
+def contenido_login():
+    return render_template("fragmentos/login.html")
+
+
+
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        usuario = Usuario.query.filter_by(user=request.form["user"]).first()
-        if usuario and usuario.pw == request.form["pw"]:
-            session["usuario_id"] = usuario.id
-            session["rol"] = usuario.rol
-            return redirect(url_for("admin_dashboard") if usuario.rol == "admin" else url_for("index"))
-        flash("Credenciales incorrectas")
-    return render_template("login.html")
+    usuario = Usuario.query.filter_by(user=request.form["user"]).first()
+
+    if usuario and usuario.pw == request.form["pw"]:
+        # Guardar datos de sesión
+        session["usuario_id"] = usuario.id
+        session["rol"] = usuario.rol
+
+        # Redirigir según rol
+        if usuario.rol == "admin":
+            return redirect(url_for("admin_dashboard"))
+        else:
+            return redirect(url_for("index"))
+
+    flash("Credenciales incorrectas", "error")
+    return redirect(url_for("index"))
+
+
+
+
 
 @app.route("/logout")
 def logout():
