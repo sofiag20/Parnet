@@ -1,9 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,redirect, url_for, flash
 from flask_socketio import SocketIO, emit, disconnect
 from flask import session, request
 from models.Database import Database
 from models.Noticia import Noticia
 from models.Visita import Visita
+from models.Usuario import Usuario
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345@localhost/parnet'
@@ -75,6 +76,23 @@ def productos():
 @app.route("/contacto")
 def contacto():
     return render_template("contacto.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        usuario = Usuario.query.filter_by(user=request.form["user"]).first()
+        if usuario and usuario.pw == request.form["pw"]:
+            session["usuario_id"] = usuario.id
+            session["rol"] = usuario.rol
+            return redirect(url_for("admin_dashboard") if usuario.rol == "admin" else url_for("index"))
+        flash("Credenciales incorrectas")
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
+
 
 # ==========================
 # Ejecutar con socketio.run
