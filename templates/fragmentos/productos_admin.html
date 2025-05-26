@@ -1,0 +1,48 @@
+<section class="admin-dashboard">
+    <h2>Gestión de Productos</h2>
+
+    <!-- FORMULARIO PARA AGREGAR -->
+    <form id="form-agregar-producto" method="POST" action="/admin/producto/crear">
+        <input type="text" name="descripcion" placeholder="Descripción" required>
+        <input type="number" step="0.01" name="costo" placeholder="Costo" required>
+        <input type="number" name="stock" placeholder="Stock" required>
+        <input type="text" name="imagen" placeholder="URL de la imagen (opcional)">
+        <button type="submit">Agregar Producto</button>
+    </form>
+
+    <hr>
+
+    <!-- LISTADO DE PRODUCTOS -->
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripción</th>
+                <th>Costo</th>
+                <th>Stock</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in productos %}
+            <tr>
+                <form method="POST" action="/admin/producto/editar/{{ p.id_producto }}">
+                    <td>{{ p.id_producto }}</td>
+                    <td><input type="text" name="descripcion" value="{{ p.descripcion }}"></td>
+                    <td><input type="number" step="0.01" name="costo" value="{{ p.costo }}"></td>
+                    <td><input type="number" name="stock" value="{{ p.stock }}"></td>
+                    <td><input type="text" name="imagen" value="{{ p.imagen }}"></td>
+                    <td>
+                        <button type="submit">Guardar</button>
+                </form>
+                <form method="POST" action="/admin/producto/eliminar/{{ p.id_producto }}" style="display:inline;">
+                    <button type="submit" onclick="return confirm('¿Eliminar este producto?')">Eliminar</button>
+                </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+

@@ -1,10 +1,11 @@
 from App import db
 
 class Producto(db.Model):
-    __tablename__ = 'producto' 
+    __tablename__ = 'producto'  # Coincide con la tabla real
 
-    id_producto = db.Column(db.Integer, primary_key=True)
+    id_producto = db.Column(db.Integer, primary_key=True)  # Coincide con el nombre real
     descripcion = db.Column(db.Text, nullable=False)
-    costo = db.Column(db.Float, nullable=False)
+    costo = db.Column(db.Numeric(10,2), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
-    imagen = db.Column(db.String(255))  # Ruta de la imagen o nombre de archivo
+    imagen = db.Column(db.String(255), nullable=True)
+

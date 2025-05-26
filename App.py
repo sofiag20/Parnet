@@ -1,18 +1,21 @@
-from flask import Flask, render_template,redirect, url_for, flash,jsonify
-from flask_socketio import SocketIO, emit, disconnect
-from flask import session, request
+from flask import Flask, render_template, redirect, url_for, jsonify, session, request
+from flask_socketio import SocketIO, emit
 from models.Database import Database
+
+db = Database.get_instance()  # ✅ OBLIGATORIO desde aquí
+
 from models.Noticia import Noticia
 from models.Visita import Visita
 from models.Usuario import Usuario
+from models.Producto import Producto
 
 app = Flask(__name__)
 app.secret_key = "admin123"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicializa DB y SocketIO
-db = Database.get_instance(app)
+db.init_app(app)  # ✅ ASOCIA la instancia Singleton a la app
+
 socketio = SocketIO(app)
 
 
@@ -105,6 +108,49 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("index"))
+
+@app.route("/admin/productos")
+def admin_productos():
+    productos = Producto.query.all()
+    return render_template("admin/productos.html", productos=productos)
+
+
+@app.route("/contenido/productos_admin")
+def productos_admin():
+    productos = Producto.query.all()
+    return render_template("fragmentos/productos_admin.html", productos=productos)
+
+@app.route("/admin/producto/crear", methods=["POST"])
+def crear_producto():
+    descripcion = request.form["descripcion"]
+    costo = request.form["costo"]
+    stock = request.form["stock"]
+    imagen = request.form.get("imagen")
+
+    nuevo = Producto(descripcion=descripcion, costo=costo, stock=stock, imagen=imagen)
+    db.session.add(nuevo)
+    db.session.commit()
+    return redirect(url_for("productos_admin"))
+
+
+@app.route("/admin/producto/editar/<int:id>", methods=["POST"])
+def editar_producto(id):
+    producto = Producto.query.get_or_404(id)
+    producto.descripcion = request.form["descripcion"]
+    producto.costo = request.form["costo"]
+    producto.stock = request.form["stock"]
+    producto.imagen = request.form.get("imagen")
+    db.session.commit()
+    return redirect(url_for("productos_admin"))
+
+
+@app.route("/admin/producto/eliminar/<int:id>", methods=["POST"])
+def eliminar_producto(id):
+    producto = Producto.query.get_or_404(id)
+    db.session.delete(producto)
+    db.session.commit()
+    return redirect(url_for("productos_admin"))
+
 
 if __name__ == "__main__":
     socketio.run(app)
