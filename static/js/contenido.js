@@ -1,13 +1,19 @@
 function cargarContenido(ruta) {
-    fetch(ruta)
-        .then(response => response.text())
-        .then(html => {
-        document.getElementById("contenido").innerHTML = html;
-
-        // 🔁 Reinicia el carrusel después de cargar
-        if (ruta.includes("principal")) {
-            iniciarCarrusel();
-        }
+    fetch(`/contenido/${ruta}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Error al cargar contenido");
+            return res.text();
         })
-        .catch(error => console.error("Error al cargar contenido:", error));
+        .then(html => {
+            const cont = document.getElementById("contenido");
+            if (cont) {
+                cont.innerHTML = html;
+
+                // 🔁 Reinicializa carrusel si es principal
+                if (ruta === "principal" && typeof iniciarCarrusel === "function") {
+                    iniciarCarrusel();  // llama la función de carrusel
+                }
+            }
+        })
+        .catch(err => console.error("Error al cargar contenido:", err));
 }

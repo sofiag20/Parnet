@@ -1,4 +1,4 @@
-from flask import Flask, render_template,redirect, url_for, flash
+from flask import Flask, render_template,redirect, url_for, flash,jsonify
 from flask_socketio import SocketIO, emit, disconnect
 from flask import session, request
 from models.Database import Database
@@ -7,12 +7,14 @@ from models.Visita import Visita
 from models.Usuario import Usuario
 
 app = Flask(__name__)
+app.secret_key = "admin123"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa DB y SocketIO
 db = Database.get_instance(app)
 socketio = SocketIO(app)
+
 
 # Variable global para usuarios conectados
 usuarios_conectados = set()
@@ -22,7 +24,6 @@ def index():
     # Noticias
     noticias_query = Noticia.query.order_by(Noticia.id_notice.desc()).limit(5).all()
     noticias_dict = [n.to_dict() for n in noticias_query]
-
     # Contador de visitas (incrementa al cargar la página)
     visita = Visita.query.first()
     if not visita:
@@ -31,7 +32,6 @@ def index():
     else:
         visita.total += 1
     db.session.commit()
-
     return render_template("index.html", noticias=noticias_dict, visitas=visita.total)
 
 
@@ -50,13 +50,12 @@ def manejar_desconexion():
 def contenido_principal():
     return render_template("fragmentos/principal.html")
 
-@app.route("/quienes")
-def quienes():
+@app.route("/contenido/quienes")
+def contenido_quienes():
     return render_template("fragmentos/quienes.html")
 
-
-@app.route("/clientes")
-def clientes():
+@app.route("/contenido/clientes")
+def contenido_clientes():
     return render_template("fragmentos/clientes.html")
 
 
@@ -74,34 +73,32 @@ def productos():
 def contacto():
     return render_template("contacto.html")
 
+@app.route("/contenido/admin")
+def contenido_admin():
+    if session.get("rol") == "admin":
+        return render_template("fragmentos/admin.html")
+    return "No autorizado", 403
+
+
 
 
 @app.route("/contenido/login")
 def contenido_login():
     return render_template("fragmentos/login.html")
 
-
-
 @app.route("/login", methods=["POST"])
 def login():
-    usuario = Usuario.query.filter_by(user=request.form["user"]).first()
+    user = request.form.get("user")
+    pw = request.form.get("pw")
 
-    if usuario and usuario.pw == request.form["pw"]:
-        # Guardar datos de sesión
+    usuario = Usuario.query.filter_by(user=user).first()
+
+    if usuario and usuario.pw == pw:
         session["usuario_id"] = usuario.id
         session["rol"] = usuario.rol
-
-        # Redirigir según rol
-        if usuario.rol == "admin":
-            return redirect(url_for("admin_dashboard"))
-        else:
-            return redirect(url_for("index"))
-
-    flash("Credenciales incorrectas", "error")
-    return redirect(url_for("index"))
-
-
-
+        return jsonify({"success": True, "rol": usuario.rol})
+    else:
+        return jsonify({"success": False, "message": "Credenciales inválidas"})
 
 
 @app.route("/logout")
@@ -109,10 +106,6 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
-
-# ==========================
-# Ejecutar con socketio.run
-# ==========================
 if __name__ == "__main__":
     socketio.run(app)
 

@@ -27,9 +27,11 @@
 
 <!-- Debajo de la marquesina -->
 <nav class="nav-tabs">
-    <a href="#" onclick="cargarContenido('/contenido/principal')" class="tab-link">Página Principal</a>
-    <a href="#" onclick="cargarContenido('/quienes')" class="tab-link">¿Quiénes Somos?</a>
-    <a href="#" onclick="cargarContenido('/clientes')" class="tab-link">Clientes</a>
+    <a href="#" onclick="cargarContenido('principal')" class="tab-link">Página Principal</a>
+    <a href="#" onclick="cargarContenido('quienes')" class="tab-link">¿Quiénes Somos?</a>
+    <a href="#" onclick="cargarContenido('clientes')" class="tab-link">Clientes</a>
+
+
 
 
 
@@ -76,7 +78,7 @@
             <a href="#" class="menu-button">Cables Estructurales</a>
             <a href="#" class="menu-button">Pólizas</a>
             <a href="#" class="menu-button">Outsourcing</a>
-            <a href="#" class="menu-button" onclick="cargarContenido('login')">Administración</a>
+            <a href="#" onclick="cargarContenido('login')" class="menu-button">Administración</a>
 
         </div>
 
@@ -115,17 +117,15 @@
     <main class="main-content" id="contenido">
     <!-- Aquí se carga el contenido con JS -->
     </main>
-
-
 </div>
 
 
 <footer>
     <div class="footer-menu">
         <div class="footer-links">
-        <a href="{{ url_for('index') }}">Página Principal</a> |
-        <a href="{{ url_for('quienes') }}">¿Quiénes Somos?</a> |
-        <a href="{{ url_for('clientes') }}">Clientes</a> |
+        <a href="#" onclick="cargarContenido('contenido/principal')" class="tab-link">Página Principal</a>
+        <a href="#" onclick="cargarContenido('contenido/quienes')" class="tab-link">¿Quiénes Somos?</a>
+        <a href="#" onclick="cargarContenido('contenido/clientes')" class="tab-link">Clientes</a> |
         <a href="{{ url_for('servicios') }}">Servicios</a> |
         <a href="{{ url_for('productos') }}">Productos</a> |
         <a href="#">Casos De Éxito</a> |
@@ -153,20 +153,16 @@
 <script src="{{ url_for('static', filename='js/noticias.js') }}"></script>
 <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/conectados.js') }}"></script>
-<script src="{{ url_for('static', filename='js/contenido.js') }}"></script>
 <script src="{{ url_for('static', filename='js/carrusel.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contenido.js') }}"></script>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 
 
-<!-- 🔽 Esto se ejecuta automáticamente al abrir la página -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    cargarContenido('/contenido/principal');
+        cargarContenido('principal');  // 👈 Carga automáticamente la página principal
     });
 </script>
-
-
-
-
 
 </body>
 </html>

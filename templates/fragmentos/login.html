@@ -1,18 +1,19 @@
+
+<!-- fragmentos/login.html -->
 <section class="login-section">
-    <h2>Panel de Administrador</h2>
-    <form id="loginForm" method="POST">
+    <h2>Inicio de Sesión</h2>
+    <form id="formLogin">
         <label for="user">Usuario:</label>
         <input type="text" name="user" id="user" required>
-
         <label for="pw">Contraseña:</label>
         <input type="password" name="pw" id="pw" required>
-
-        <div id="error-msg" class="error-msg"></div>
-
-        <button type="submit">Iniciar Sesión</button>
+        <div id="error-msg" class="error-msg" style="color:red;"></div>
+        <button type="submit">Entrar</button>
     </form>
 </section>
 
-<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+<script src="/static/js/contenido.js"></script>
+<script src="/static/js/login.js"></script>
 
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
