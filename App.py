@@ -11,7 +11,7 @@ from models.Producto import Producto
 
 app = Flask(__name__)
 app.secret_key = "admin123"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345@localhost/parnet'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://cecilio:ceci1282@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)  # ✅ ASOCIA la instancia Singleton a la app
