@@ -137,11 +137,12 @@ def crear_producto():
 def editar_producto(id):
     producto = Producto.query.get_or_404(id)
     producto.descripcion = request.form["descripcion"]
-    producto.costo = request.form["costo"]
-    producto.stock = request.form["stock"]
-    producto.imagen = request.form.get("imagen")
+    producto.costo       = request.form["costo"]
+    producto.stock       = request.form["stock"]
+    producto.imagen      = request.form.get("imagen")
     db.session.commit()
-    return redirect(url_for("productos_admin"))
+    return jsonify(success=True)
+
 
 
 @app.route("/admin/producto/eliminar/<int:id>", methods=["POST"])
