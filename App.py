@@ -152,9 +152,27 @@ def eliminar_producto(id):
     return redirect(url_for("productos_admin"))
 
 
-@app.route("/login2")
-def login2():
-    return render_template("login2.html")
+@app.route("/login", methods=["POST"])
+def login():
+    user = request.form.get("user")
+    pw   = request.form.get("pw")
+    usuario = Usuario.query.filter_by(user=user).first()
+    if usuario and usuario.pw == pw:
+        session["usuario_id"] = usuario.id
+        session["rol"]        = usuario.rol
+        # en lugar de jsonify, redirige a la página de productos
+        return redirect(url_for("productos_admin2"))
+        # si falla, vuelve al login con mensaje (puedes ampliarlo)
+        return redirect(url_for("login2"))
+
+
+@app.route("/productos_admin2")
+def productos_admin2():
+    # Verifica que el usuario esté autenticado y sea admin
+    if session.get("rol") != "admin":
+        return redirect(url_for("login2"))
+    productos = Producto.query.all() or []
+    return render_template("productos_admin2.html", productos=productos)
 
 
 if __name__ == "__main__":

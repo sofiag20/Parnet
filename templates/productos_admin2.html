@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin • Productos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login2.css') }}">
+</head>
+<body>
+  <header>
+    <a href="{{ url_for('login2') }}">← Cerrar sesión</a>
+  </header>
+  <section class="admin-dashboard">
+    <h2>Gestión de Productos</h2>
+    <form id="form-agregar-producto" onsubmit="return crearProducto();">
+      <input type="text"   name="descripcion" placeholder="Descripción" required>
+      <input type="number" step="0.01" name="costo" placeholder="Costo" required>
+      <input type="number" name="stock" placeholder="Stock" required>
+      <input type="text"   name="imagen" placeholder="URL imagen">
+      <button type="submit">Agregar</button>
+    </form>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Desc.</th><th>Costo</th><th>Stock</th><th>Acción</th></tr>
+      </thead>
+      <tbody>
+        {% for p in productos %}
+        <tr>
+          <td>{{ p.id_producto }}</td>
+          <td>{{ p.descripcion }}</td>
+          <td>{{ '%.2f'|format(p.costo) }}</td>
+          <td>{{ p.stock }}</td>
+          <td>
+            <button onclick="eliminarProducto('{{ p.id_producto }}')">🗑️</button>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No hay productos.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>
