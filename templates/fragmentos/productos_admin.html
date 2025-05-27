@@ -2,10 +2,13 @@
     <h2>Gestión de Productos</h2>
 
     <!-- FORMULARIO PARA AGREGAR -->
-    <form id="form-agregar-producto" method="POST" action="/admin/producto/crear">
-        <input type="text" name="descripcion" placeholder="Descripción" required>
-        <input type="number" step="0.01" name="costo" placeholder="Costo" required>
-        <input type="number" name="stock" placeholder="Stock" required>
+    <form id="formAgregar" method="POST" action="/admin/producto/crear">
+        <input type="text"   name="descripcion" placeholder="Descripción" required>
+        <input type="number" name="costo"       step="0.01" placeholder="Costo"      required>
+        <select name="stock" required>
+            <option value="existencia">En existencia</option>
+            <option value="agotado">Agotado</option>
+        </select>
         <input type="text" name="imagen" placeholder="URL de la imagen (opcional)">
         <button type="submit">Agregar Producto</button>
     </form>
@@ -29,20 +32,51 @@
             <tr>
                 <form method="POST" action="/admin/producto/editar/{{ p.id_producto }}">
                     <td>{{ p.id_producto }}</td>
-                    <td><input type="text" name="descripcion" value="{{ p.descripcion }}"></td>
-                    <td><input type="number" step="0.01" name="costo" value="{{ p.costo }}"></td>
-                    <td><input type="number" name="stock" value="{{ p.stock }}"></td>
-                    <td><input type="text" name="imagen" value="{{ p.imagen }}"></td>
+                    <td>
+                        <input 
+                            type="text" 
+                            name="descripcion" 
+                            value="{{ p.descripcion }}" 
+                            required
+                        >
+                    </td>
+                    <td>
+                        <input 
+                            type="number" 
+                            name="costo" 
+                            step="0.01" 
+                            value="{{ "%.2f"|format(p.costo) }}" 
+                            required
+                        >
+                    </td>
+                    <td>
+                        <select name="stock" required>
+                            <option value="existencia" {% if p.stock == 'existencia' %}selected{% endif %}>
+                                En existencia
+                            </option>
+                            <option value="agotado" {% if p.stock == 'agotado' %}selected{% endif %}>
+                                Agotado
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        {% if p.imagen %}
+                            <img src="{{ p.imagen }}" alt="Imagen" width="60">
+                        {% else %}
+                            <input type="text" name="imagen" placeholder="URL de la imagen">
+                        {% endif %}
+                    </td>
                     <td>
                         <button type="submit">Guardar</button>
                 </form>
                 <form method="POST" action="/admin/producto/eliminar/{{ p.id_producto }}" style="display:inline;">
-                    <button type="submit" onclick="return confirm('¿Eliminar este producto?')">Eliminar</button>
+                    <button type="submit" onclick="return confirm('¿Eliminar este producto?')">🗑️</button>
                 </form>
-                </td>
+                    </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </section>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/producto.css') }}">

@@ -1,0 +1,11 @@
+<div class="productos-grid">
+    {% for producto in productos %}
+        <div class="producto-card">
+            <a href="{{ producto.link or '#' }}" target="_blank">
+                <img src="{{ producto.imagen }}" alt="{{ producto.descripcion }}">
+            </a>
+            <p>{{ producto.descripcion }}</p>
+            <p><strong>${{ "%.2f"|format(producto.costo) }}</strong></p>
+        </div>
+    {% endfor %}
+</div>
