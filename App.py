@@ -1,33 +1,40 @@
-from flask import Flask, render_template, redirect, url_for, jsonify, session, request
+# App.py
+from flask import (
+    Flask, render_template, redirect, url_for,
+    session, request
+)
 from flask_socketio import SocketIO, emit
 from models.Database import Database
+from models.Noticia   import Noticia
+from models.Visita    import Visita
+from models.Usuario   import Usuario
+from models.Producto  import Producto
 
-db = Database.get_instance()  # ✅ OBLIGATORIO desde aquí
+# Instancia única de SQLAlchemy
+db = Database.get_instance()
 
-from models.Noticia import Noticia
-from models.Visita import Visita
-from models.Usuario import Usuario
-from models.Producto import Producto
-
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = "admin123"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://cecilio:ceci1282@localhost/parnet'
+app.config['SQLALCHEMY_DATABASE_URI']        = 'mysql+pymysql://cecilio:ceci1282@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)  # ✅ ASOCIA la instancia Singleton a la app
-
+# Asociamos db y SocketIO
+db.init_app(app)
 socketio = SocketIO(app)
 
-
-# Variable global para usuarios conectados
+# Mantiene los sid de usuarios conectados
 usuarios_conectados = set()
+
+# ——————————————————————————————
+# RUTAS PÚBLICAS
+# ——————————————————————————————
 
 @app.route("/")
 def index():
-    # Noticias
-    noticias_query = Noticia.query.order_by(Noticia.id_notice.desc()).limit(5).all()
-    noticias_dict = [n.to_dict() for n in noticias_query]
-    # Contador de visitas (incrementa al cargar la página)
+    noticias = Noticia.query \
+        .order_by(Noticia.id_notice.desc()) \
+        .limit(5) \
+        .all()
     visita = Visita.query.first()
     if not visita:
         visita = Visita(total=1)
@@ -35,20 +42,14 @@ def index():
     else:
         visita.total += 1
     db.session.commit()
-    return render_template("index.html", noticias=noticias_dict, visitas=visita.total)
 
+    return render_template(
+        "index.html",
+        noticias=[n.to_dict() for n in noticias],
+        visitas=visita.total
+    )
 
-@socketio.on('connect')
-def manejar_conexion():
-    usuarios_conectados.add(request.sid)
-    emit('actualizar_conectados', len(usuarios_conectados), broadcast=True)
-
-@socketio.on('disconnect')
-def manejar_desconexion():
-    usuarios_conectados.discard(request.sid)
-    emit('actualizar_conectados', len(usuarios_conectados), broadcast=True)
-
-
+# Fragmentos cargados por AJAX
 @app.route("/contenido/principal")
 def contenido_principal():
     return render_template("fragmentos/principal.html")
@@ -61,12 +62,10 @@ def contenido_quienes():
 def contenido_clientes():
     return render_template("fragmentos/clientes.html")
 
-
-
+# Páginas completas estáticas
 @app.route("/servicios")
 def servicios():
     return render_template("servicios.html")
-
 
 @app.route("/productos")
 def productos():
@@ -76,80 +75,28 @@ def productos():
 def contacto():
     return render_template("contacto.html")
 
-@app.route("/contenido/admin")
-def contenido_admin():
-    if session.get("rol") == "admin":
-        return render_template("fragmentos/admin.html")
-    return "No autorizado", 403
+# ——————————————————————————————
+# SOCKET.IO PARA USUARIOS CONECTADOS
+# ——————————————————————————————
 
+@socketio.on('connect')
+def manejar_conexion():
+    usuarios_conectados.add(request.sid)
+    emit('actualizar_conectados', len(usuarios_conectados), broadcast=True)
 
+@socketio.on('disconnect')
+def manejar_desconexion():
+    usuarios_conectados.discard(request.sid)
+    emit('actualizar_conectados', len(usuarios_conectados), broadcast=True)
 
+# ——————————————————————————————
+# LOGIN / LOGOUT
+# ——————————————————————————————
 
-@app.route("/contenido/login")
-def contenido_login():
-    return render_template("fragmentos/login.html")
-
-@app.route("/login", methods=["POST"])
-def login():
-    user = request.form.get("user")
-    pw = request.form.get("pw")
-
-    usuario = Usuario.query.filter_by(user=user).first()
-
-    if usuario and usuario.pw == pw:
-        session["usuario_id"] = usuario.id
-        session["rol"] = usuario.rol
-        return jsonify({"success": True, "rol": usuario.rol})
-    else:
-        return jsonify({"success": False, "message": "Credenciales inválidas"})
-
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("index"))
-
-@app.route("/admin/productos")
-def admin_productos():
-    productos = Producto.query.all()
-    return render_template("admin/productos.html", productos=productos)
-
-
-@app.route("/contenido/productos_admin")
-def productos_admin():
-    productos = Producto.query.all()
-    return render_template("fragmentos/productos_admin.html", productos=productos)
-
-@app.route("/admin/producto/crear", methods=["POST"])
-def crear_producto():
-    descripcion = request.form["descripcion"]
-    costo = request.form["costo"]
-    stock = request.form["stock"]
-    imagen = request.form.get("imagen")
-
-    nuevo = Producto(descripcion=descripcion, costo=costo, stock=stock, imagen=imagen)
-    db.session.add(nuevo)
-    db.session.commit()
-    return redirect(url_for("productos_admin"))
-
-
-@app.route("/admin/producto/editar/<int:id>", methods=["POST"])
-def editar_producto(id):
-    producto = Producto.query.get_or_404(id)
-    producto.descripcion = request.form["descripcion"]
-    producto.costo = request.form["costo"]
-    producto.stock = request.form["stock"]
-    producto.imagen = request.form.get("imagen")
-    db.session.commit()
-    return redirect(url_for("productos_admin"))
-
-
-@app.route("/admin/producto/eliminar/<int:id>", methods=["POST"])
-def eliminar_producto(id):
-    producto = Producto.query.get_or_404(id)
-    db.session.delete(producto)
-    db.session.commit()
-    return redirect(url_for("productos_admin"))
+@app.route("/login2")
+def login2():
+    # Antes: return render_template("Login2.html")
+    return render_template("login2.html")
 
 
 @app.route("/login", methods=["POST"])
@@ -160,22 +107,62 @@ def login():
     if usuario and usuario.pw == pw:
         session["usuario_id"] = usuario.id
         session["rol"]        = usuario.rol
-        # en lugar de jsonify, redirige a la página de productos
         return redirect(url_for("productos_admin2"))
-        # si falla, vuelve al login con mensaje (puedes ampliarlo)
-        return redirect(url_for("login2"))
+    return redirect(url_for("login2"))
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login2"))
+
+# ——————————————————————————————
+# ADMINISTRACIÓN DE PRODUCTOS (CRUD EN PÁGINA COMPLETA)
+# ——————————————————————————————
 
 @app.route("/productos_admin2")
 def productos_admin2():
-    # Verifica que el usuario esté autenticado y sea admin
     if session.get("rol") != "admin":
         return redirect(url_for("login2"))
-    productos = Producto.query.all() or []
+    productos = Producto.query.all()
     return render_template("productos_admin2.html", productos=productos)
 
+@app.route("/admin/producto/crear", methods=["POST"])
+def crear_producto():
+    descripcion = request.form["descripcion"]
+    costo       = request.form["costo"]
+    stock       = request.form["stock"]
+    imagen      = request.form.get("imagen")
+    nuevo = Producto(
+        descripcion=descripcion,
+        costo=costo,
+        stock=stock,
+        imagen=imagen
+    )
+    db.session.add(nuevo)
+    db.session.commit()
+    return redirect(url_for("productos_admin2"))
+
+@app.route("/admin/producto/editar/<int:id>", methods=["POST"])
+def editar_producto(id):
+    p = Producto.query.get_or_404(id)
+    p.descripcion = request.form["descripcion"]
+    p.costo       = request.form["costo"]
+    p.stock       = request.form["stock"]
+    p.imagen      = request.form.get("imagen")
+    db.session.commit()
+    return redirect(url_for("productos_admin2"))
+
+@app.route("/admin/producto/eliminar/<int:id>", methods=["POST"])
+def eliminar_producto(id):
+    p = Producto.query.get_or_404(id)
+    db.session.delete(p)
+    db.session.commit()
+    return redirect(url_for("productos_admin2"))
+
+# ——————————————————————————————
+# EJECUCIÓN
+# ——————————————————————————————
 
 if __name__ == "__main__":
-    socketio.run(app)
-
-
+    # Arranca HTTP + WebSocket
+    socketio.run

@@ -11,4 +11,5 @@ class Database:
             print("🔄 SQLAlchemy (Singleton) instanciado")
         return Database._instance
 
-
+# Exporta directamente la instancia única para importarla como `db`
+db = Database.get_instance()
