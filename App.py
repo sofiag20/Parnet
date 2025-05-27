@@ -152,6 +152,11 @@ def eliminar_producto(id):
     return redirect(url_for("productos_admin"))
 
 
+@app.route("/login2")
+def login2():
+    return render_template("login2.html")
+
+
 if __name__ == "__main__":
     socketio.run(app)
 

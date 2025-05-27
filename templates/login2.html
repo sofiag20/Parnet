@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Administración - PARNET</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+  <header>  
+    <!-- aquí podrías reutilizar tu header -->
+    <a href="{{ url_for('index') }}">← Volver</a>
+  </header>
+
+  <main class="login-page">
+    <h2>Administración</h2>
+    <form action="{{ url_for('login') }}" method="POST">
+      <label for="user">Usuario:</label>
+      <input type="text" name="user" id="user" required>
+      <label for="pw">Contraseña:</label>
+      <input type="password" name="pw" id="pw" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </main>
+</body>
+</html>
