@@ -1,7 +1,8 @@
-# App.py
+import smtplib   
+import os
 from flask import (
     Flask, render_template, redirect, url_for,
-    session, request
+    session, request, current_app, flash
 )
 from flask_socketio import SocketIO, emit
 from models.Database import Database
@@ -9,6 +10,8 @@ from models.Noticia   import Noticia
 from models.Visita    import Visita
 from models.Usuario   import Usuario
 from models.Producto  import Producto
+from models.Contacto import ContactoForm
+from email.mime.text import MIMEText
 
 # Instancia única de SQLAlchemy
 db = Database.get_instance()
@@ -17,6 +20,19 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = "admin123"
 app.config['SQLALCHEMY_DATABASE_URI']        = 'mysql+pymysql://root:12345@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+app.config['SECRET_KEY'] = '4338b5a9e5c318f36ecc450a84236f2edb254dea3a2ee6ff'
+
+
+# Datos de tu servidor SMTP
+app.config['SMTP_SERVER']       = 'smtp.gmail.com'  
+app.config['SMTP_PORT']         = 587    
+app.config['SMTP_USER']         = 'parnetoficial@gmail.com' 
+app.config['SMTP_PASS']         = 'gfss tlhm nhpb dvde'
+
+
+# Destinatario del formulario de contacto
+app.config['CONTACT_RECIPIENT'] = 'parnetoficial@gmail.com' 
 
 # Asociamos db y SocketIO
 db.init_app(app)
@@ -79,10 +95,63 @@ def productos():
         productos = Producto.query.all()
     return render_template('fragmentos/producto.html', productos=productos)
 
-@app.route("/contacto")
-def contacto():
-    return render_template("contacto.html")
+@app.route('/contenido/contacto', methods=['GET', 'POST'])
+def contenido_contacto():
+    form = ContactoForm()
+    return render_template('fragmentos/contacto.html', form=form)
 
+@app.route('/contacto', methods=['GET', 'POST'])
+def contacto():
+    if request.method == 'POST':
+        # 1) Leer campos del formulario
+        nombre  = request.form.get('nombre', '').strip()
+        correo  = request.form.get('correo', '').strip()
+        asunto  = request.form.get('asunto', '').strip()
+        mensaje = request.form.get('mensaje', '').strip()
+
+        # 2) Validación mínima
+        if not nombre or not correo or not asunto or not mensaje:
+            flash('Por favor completa todos los campos.', 'danger')
+            return redirect(url_for('contacto'))
+
+        # 3) Construir el cuerpo del mensaje
+        cuerpo = f"""De: {nombre} <{correo}>
+
+Asunto: {asunto}
+
+Mensaje:
+{mensaje}
+"""
+
+        # 4) Crear el objeto MIMEText
+        msg = MIMEText(cuerpo, _charset='utf-8')
+        msg['Subject']  = asunto
+        msg['From']     = current_app.config['SMTP_USER']
+        msg['To']       = current_app.config['CONTACT_RECIPIENT']
+        msg['Reply-To'] = correo
+
+        # 5) Enviar por SMTP
+        try:
+            servidor = smtplib.SMTP(
+                current_app.config['SMTP_SERVER'],
+                current_app.config['SMTP_PORT']
+            )
+            servidor.starttls()
+            servidor.login(
+                current_app.config['SMTP_USER'],
+                current_app.config['SMTP_PASS']
+            )
+            servidor.send_message(msg)
+            servidor.quit()
+            flash('¡Tu mensaje ha sido enviado con éxito!', 'success')
+        except Exception as e:
+            current_app.logger.error(f'Error enviando correo: {e}')
+            flash('Ocurrió un error al enviar tu mensaje. Intenta más tarde.', 'danger')
+
+        return redirect(url_for('contacto'))
+
+    # GET: mostrar el formulario
+    return render_template('contacto.html')
 # ——————————————————————————————
 # SOCKET.IO PARA USUARIOS CONECTADOS
 # ——————————————————————————————
@@ -166,6 +235,8 @@ def eliminar_producto(id):
     db.session.delete(p)
     db.session.commit()
     return redirect(url_for("productos_admin2"))
+
+
 
 
 

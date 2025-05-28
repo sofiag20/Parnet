@@ -1,0 +1,64 @@
+<!-- templates/contacto.html -->
+<div class="contacto-section">
+    <h1>Contáctanos</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, msg in messages %}
+            <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('contacto') }}" class="contacto-form">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                placeholder="Tu nombre"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="correo">Correo electrónico</label>
+            <input
+                type="email"
+                id="correo"
+                name="correo"
+                placeholder="tu@ejemplo.com"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="asunto">Asunto</label>
+            <input
+                type="text"
+                id="asunto"
+                name="asunto"
+                placeholder="¿Sobre qué quieres hablar?"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="mensaje">Mensaje</label>
+            <textarea
+                id="mensaje"
+                name="mensaje"
+                rows="6"
+                placeholder="Escribe aquí tu mensaje..."
+                required
+            ></textarea>
+        </div>
+
+        <button type="submit" class="btn-enviar">Enviar mensaje</button>
+    </form>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contacto.css') }}">

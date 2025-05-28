@@ -34,7 +34,7 @@
     <a href="{{ url_for('servicios') }}" class="tab-link">Servicios</a>
     <a href="#" onclick="cargarContenido('productos')" class="tab-link">Productos</a>
     <a href="#" class="tab-link">Casos De Éxito</a>
-    <a href="{{ url_for('contacto') }}" class="tab-link">Contactos</a>
+    <a href="#" onclick="cargarContenido('contacto')" class="tab-link">Contacto</a>
     <a href="#" class="tab-link">Socios</a>
 </nav>
 
@@ -73,7 +73,7 @@
             <a href="#" class="menu-button">Fibra Óptica</a>
             <a href="#" class="menu-button">Cables Estructurales</a>
             <a href="#" class="menu-button">Pólizas</a>
-            <a href="#" class="menu-button">Outsourcing</a>
+            <a href="#" class="menu-button">Sugerencia</a>
             <a href="{{ url_for('login2') }}" class="menu-button">Administración</a>
 
         </div>
@@ -125,7 +125,7 @@
         <a href="{{ url_for('servicios') }}">Servicios</a> |
         <a href="#" onclick="cargarContenido('contenido/producto')" class="tab-link">¿Quiénes Somos?</a>
         <a href="#">Casos De Éxito</a> |
-        <a href="{{ url_for('contacto') }}">Contacto</a> |
+        <a href="#" onclick="cargarContenido('contenido/contacto')" class="tab-link">Contacto</a>
         <a href="#">Soporte</a>
         </div>
         <img src="{{ url_for('static', filename='img/conector.png') }}" alt="Globo" class="footer-globe">
