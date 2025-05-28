@@ -15,7 +15,7 @@ db = Database.get_instance()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = "admin123"
-app.config['SQLALCHEMY_DATABASE_URI']        = 'mysql+pymysql://cecilio:ceci1282@localhost/parnet'
+app.config['SQLALCHEMY_DATABASE_URI']        = 'mysql+pymysql://root:12345@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Asociamos db y SocketIO
@@ -67,9 +67,17 @@ def contenido_clientes():
 def servicios():
     return render_template("servicios.html")
 
-@app.route("/productos")
+@app.route("/contenido/productos")
 def productos():
-    return render_template("productos.html")
+    q = request.args.get('q', '').strip()
+    if q:
+        # Buscamos en el campo descripción
+        productos = Producto.query.filter(
+            Producto.descripcion.ilike(f'%{q}%')
+        ).all()
+    else:
+        productos = Producto.query.all()
+    return render_template('fragmentos/producto.html', productos=productos)
 
 @app.route("/contacto")
 def contacto():
@@ -158,6 +166,8 @@ def eliminar_producto(id):
     db.session.delete(p)
     db.session.commit()
     return redirect(url_for("productos_admin2"))
+
+
 
 # ——————————————————————————————
 # EJECUCIÓN

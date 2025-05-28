@@ -1,11 +1,36 @@
-<div class="productos-grid">
-    {% for producto in productos %}
-        <div class="producto-card">
-            <a href="{{ producto.link or '#' }}" target="_blank">
-                <img src="{{ producto.imagen }}" alt="{{ producto.descripcion }}">
-            </a>
-            <p>{{ producto.descripcion }}</p>
-            <p><strong>${{ "%.2f"|format(producto.costo) }}</strong></p>
-        </div>
-    {% endfor %}
+<!-- templates/producto.html -->
+<div class="catalogo-section">
+    <h1>Catálogo de Productos</h1>
+
+    <form method="GET" action="{{ url_for('productos') }}" class="producto-busqueda">
+        <input
+            type="text"
+            name="q"
+            placeholder="Buscar producto..."
+            value="{{ request.args.get('q', '') }}"
+        >
+        <button type="submit">Buscar</button>
+    </form>
+
+    <div class="producto-grid">
+        {% if productos %}
+            {% for producto in productos %}
+            <div class="producto-card">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen }}" alt="{{ producto.descripcion }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='img/no-image.png') }}" alt="Sin imagen">
+                {% endif %}
+                <div class="producto-nombre">{{ producto.descripcion }}</div>
+                <div class="producto-precio">
+                    ${{ '%.2f' | format(producto.costo) }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No se encontraron productos para la búsqueda.</p>
+        {% endif %}
+    </div>
 </div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/producto.css') }}">
