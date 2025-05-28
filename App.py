@@ -12,6 +12,7 @@ from models.Usuario   import Usuario
 from models.Producto  import Producto
 from models.Contacto import ContactoForm
 from email.mime.text import MIMEText
+from models.Sugerencia import Sugerencia, SugerenciaForm
 
 # Instancia única de SQLAlchemy
 db = Database.get_instance()
@@ -22,6 +23,8 @@ app.config['SQLALCHEMY_DATABASE_URI']        = 'mysql+pymysql://root:12345@local
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SECRET_KEY'] = '4338b5a9e5c318f36ecc450a84236f2edb254dea3a2ee6ff'
+app.config['RECAPTCHA_PUBLIC_KEY']  = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
 
 
 # Datos de tu servidor SMTP
@@ -238,6 +241,30 @@ def eliminar_producto(id):
 
 
 
+
+@app.route('/sugerencias', methods=['GET', 'POST'])
+def sugerencias():
+    form = SugerenciaForm()
+    if form.validate_on_submit():
+        nueva = Sugerencia(
+            nombre  = form.nombre.data,
+            mensaje = form.mensaje.data
+        )
+        db.session.add(nueva)
+        db.session.commit()
+        flash('¡Gracias por tu sugerencia!', 'success')
+        return redirect(url_for('sugerencias'))
+    return render_template('sugerencias.html', form=form)
+
+@app.route('/contenido/sugerencias')
+def contenido_sugerencias():
+    form = SugerenciaForm()
+    return render_template('fragmentos/sugerencias.html', form=form)
+
+@app.route('/contenido/sugerencias_admin')
+def contenido_sugerencias_admin():
+    sugerencias = Sugerencia.query.order_by(Sugerencia.creado_el.desc()).all()
+    return render_template('fragmentos/admin_sugerencias.html', sugerencias=sugerencias)
 
 
 # ——————————————————————————————

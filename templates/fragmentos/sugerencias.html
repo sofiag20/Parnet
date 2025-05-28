@@ -1,0 +1,26 @@
+<div class="sugerencias-container">
+    <h1>Envíanos tu sugerencia</h1>
+    <form method="POST" action="{{ url_for('sugerencias') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.nombre.label }}<br>
+            {{ form.nombre(class="form-control") }}
+            {% for e in form.nombre.errors %}<small class="form-error">{{ e }}</small>{% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.mensaje.label }}<br>
+            {{ form.mensaje(class="form-control") }}
+            {% for e in form.mensaje.errors %}<small class="form-error">{{ e }}</small>{% endfor %}
+        </div>
+        <div class="form-group recaptcha-group">
+            {{ form.recaptcha }}
+            {% for err in form.recaptcha.errors %}
+                <small class="form-error">{{ err }}</small>
+            {% endfor %}
+        </div>
+        {{ form.submit(class="btn-sugerir") }}
+    </form>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sugerencias.css') }}">

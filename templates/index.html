@@ -73,7 +73,9 @@
             <a href="#" class="menu-button">Fibra Óptica</a>
             <a href="#" class="menu-button">Cables Estructurales</a>
             <a href="#" class="menu-button">Pólizas</a>
-            <a href="#" class="menu-button">Sugerencia</a>
+            <a href="#" onclick="cargarContenido('sugerencias')" class="menu-button">
+            Sugerencia
+            </a>
             <a href="{{ url_for('login2') }}" class="menu-button">Administración</a>
 
         </div>
@@ -152,6 +154,7 @@
 <script src="{{ url_for('static', filename='js/carrusel.js') }}"></script>
 <script src="{{ url_for('static', filename='js/contenido.js') }}"></script>
 <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
 
 
 <script>
