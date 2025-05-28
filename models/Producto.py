@@ -1,4 +1,4 @@
-from App import db
+from models.Database import db
 
 class Producto(db.Model):
     __tablename__ = 'producto'  # Coincide con la tabla real

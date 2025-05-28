@@ -1,0 +1,49 @@
+/* static/css/login2.css */
+body {
+  margin: 0; font-family: sans-serif;
+  background: #f0f2f5;
+  display: flex; align-items: center; justify-content: center;
+  height: 100vh;
+}
+
+.login2-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  width: 300px;
+}
+
+.login2-container h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #003366;
+}
+
+.login2-container label {
+  font-size: 0.9rem; margin-top: 0.5rem;
+}
+
+.login2-container input {
+  width: 100%; padding: 0.5rem; margin-top: 0.25rem;
+  border: 1px solid #ccc; border-radius: 4px;
+}
+
+.login2-container button {
+  width: 100%; padding: 0.6rem; margin-top: 1rem;
+  background: #004080; color: white; border: none;
+  border-radius: 4px; cursor: pointer;
+}
+
+.login2-container button:hover {
+  background: #0066cc;
+}
+
+.login2-container .volver {
+  display: block; text-align: center; margin-top: 1rem;
+  color: #004080; text-decoration: none;
+}
+
+.login2-container .volver:hover {
+  text-decoration: underline;
+}

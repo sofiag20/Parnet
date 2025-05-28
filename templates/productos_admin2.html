@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin • Productos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/productos_admin2.css') }}">
+</head>
+<body>
+  <header>
+    <a href="{{ url_for('logout') }}">← Cerrar sesión</a>
+  </header>
+
+  <section class="admin-dashboard">
+    <h2>Gestión de Productos</h2>
+
+    <!-- Formulario de alta -->
+    <form id="form-agregar-producto"
+          action="{{ url_for('crear_producto') }}"
+          method="POST"
+          class="form-agregar">
+      <input type="text" name="descripcion" placeholder="Descripción" required>
+      <input type="number" step="0.01" name="costo" placeholder="Costo" required>
+      <select name="stock" required>
+        <option value="existencia">En existencia</option>
+        <option value="agotado">Agotado</option>
+      </select>
+      <input type="text" name="imagen" placeholder="URL imagen">
+      <button type="submit">Agregar</button>
+    </form>
+
+    <!-- Tabla de productos -->
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Imagen</th>
+          <th>Desc.</th>
+          <th>Costo</th>
+          <th>Stock</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productos %}
+        <tr>
+          <td>{{ p.id_producto }}</td>
+          <td>
+            {% if p.imagen %}
+              <img src="{{ p.imagen }}" alt="img-{{p.id_producto}}" class="miniatura">
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>
+            <form action="{{ url_for('editar_producto', id=p.id_producto) }}"
+                  method="POST" class="form-editar">
+              <input name="descripcion" value="{{ p.descripcion }}">
+          </td>
+          <td>
+              <input name="costo" value="{{ p.costo }}" step="0.01" type="number">
+          </td>
+          <td>
+              <select name="stock">
+                <option value="existencia" {% if p.stock=='existencia' %}selected{% endif %}>
+                  En existencia
+                </option>
+                <option value="agotado" {% if p.stock=='agotado' %}selected{% endif %}>
+                  Agotado
+                </option>
+              </select>
+          </td>
+          <td class="acciones">
+              <input name="imagen" value="{{ p.imagen }}" placeholder="URL imagen">
+              <button type="submit" title="Guardar cambios">💾</button>
+              <button formaction="{{ url_for('eliminar_producto', id=p.id_producto) }}"
+                      formmethod="POST" title="Eliminar">🗑️</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">No hay productos.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>
