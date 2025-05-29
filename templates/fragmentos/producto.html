@@ -1,4 +1,3 @@
-<!-- templates/producto.html -->
 <div class="catalogo-section">
     <h1>Catálogo de Productos</h1>
 
@@ -15,16 +14,18 @@
     <div class="producto-grid">
         {% if productos %}
             {% for producto in productos %}
-            <div class="producto-card">
+            <div
+                class="producto-card"
+                onclick="cargarContenido('producto/{{ producto.id_producto }}')"
+                style="cursor:pointer;"
+            >
                 {% if producto.imagen %}
                     <img src="{{ producto.imagen }}" alt="{{ producto.descripcion }}">
                 {% else %}
                     <img src="{{ url_for('static', filename='img/no-image.png') }}" alt="Sin imagen">
                 {% endif %}
                 <div class="producto-nombre">{{ producto.descripcion }}</div>
-                <div class="producto-precio">
-                    ${{ '%.2f' | format(producto.costo) }}
-                </div>
+                <div class="producto-precio">${{ '%.2f' | format(producto.costo) }}</div>
             </div>
             {% endfor %}
         {% else %}

@@ -1,0 +1,25 @@
+<section class="detalle-producto">
+    <h1>{{ producto.descripcion }}</h1>
+
+    {% if producto.imagen %}
+        <img src="{{ producto.imagen }}"
+            alt="{{ producto.descripcion }}"
+            class="img-detalle">
+    {% endif %}
+
+    <p><strong>Precio:</strong> ${{ '%.2f'|format(producto.costo) }}</p>
+    <p><strong>Estatus:</strong> {{ producto.stock.capitalize() }}</p>
+
+    <form action="{{ url_for('export_producto_pdf', id=producto.id_producto) }}"
+            method="GET">
+        <button type="submit" class="btn-export-pdf">
+        📄 Descargar PDF
+        </button>
+    </form>
+
+    <button onclick="cargarContenido('producto')" class="btn-volver">
+        ← Volver al catálogo
+    </button>
+</section>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/producto_detalle.css') }}">

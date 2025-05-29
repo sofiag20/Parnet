@@ -2,15 +2,19 @@ import smtplib
 import os
 from flask_paginate import Pagination, get_page_parameter
 from io import BytesIO
+import requests
 import pandas as pd
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from io import BytesIO
+from PIL import Image
 import pandas as pd
+import logging
+from reportlab.lib.utils import ImageReader
 
 from flask import (
     Flask, render_template, redirect, url_for,
-    session, request, current_app, flash,send_file
+    session, request, current_app, flash,send_file, abort
 )
 from flask_socketio import SocketIO, emit
 from models.Database import Database
@@ -26,6 +30,7 @@ from models.Sugerencia import Sugerencia, SugerenciaForm
 db = Database.get_instance()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.logger.setLevel(logging.DEBUG)
 app.secret_key = "admin123"
 app.config['SQLALCHEMY_DATABASE_URI']        = 'mysql+pymysql://root:12345@localhost/parnet'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -262,6 +267,104 @@ def contenido_productos_admin2():
     productos = Producto.query.all()
     return render_template('fragmentos/productos_admin2.html', productos=productos)
 
+@app.route('/contenido/producto')
+def contenido_productos():
+    q = request.args.get('q', '').strip()
+    if q:
+        productos = Producto.query.filter(Producto.descripcion.ilike(f'%{q}%')).all()
+    else:
+        productos = Producto.query.all()
+    return render_template('fragmentos/producto.html', productos=productos)
+
+@app.route('/contenido/producto/<int:id>')
+def contenido_producto_detalle(id):
+    producto = Producto.query.get_or_404(id)
+    return render_template('fragmentos/producto_detalle.html',producto=producto)
+
+@app.route('/producto/<int:id>/exportar')
+def export_producto_pdf(id):
+    producto = Producto.query.get_or_404(id)
+
+    # Preparamos canvas
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    w, h = letter
+
+    # Título
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(40, h - 50, f"Producto: {producto.descripcion}")
+
+    # Punto de inicio del texto
+    y_start = h - 100
+
+    # Intento de carga de imagen
+    try:
+        img_field = (producto.imagen or "").strip()
+        img = None
+
+        if img_field.lower().startswith(('http://','https://')):
+            resp = requests.get(img_field, timeout=5)
+            resp.raise_for_status()
+            img = Image.open(BytesIO(resp.content))
+        else:
+            # asumimos ruta local en /static
+            ruta_rel = img_field.lstrip('/')
+            path = os.path.join(current_app.root_path, ruta_rel)
+            if os.path.exists(path):
+                img = Image.open(path)
+
+        if img:
+            # redimensionar a 150px de alto
+            max_h = 150
+            ratio = max_h / float(img.height)
+            img_w, img_h = int(img.width * ratio), int(max_h)
+
+            # remuestreo con Lanczos
+            resample = getattr(Image, "Resampling", Image).LANCZOS
+            img_resized = img.resize((img_w, img_h), resample)
+
+            # ponemos la imagen en un ImageReader
+            buf2 = BytesIO()
+            img_resized.save(buf2, format='PNG')
+            buf2.seek(0)
+            img_reader = ImageReader(buf2)    # <-- aquí
+
+            # dibujamos usando el ImageReader
+            p.drawImage(
+                img_reader,
+                40, h - 80 - img_h,
+                width=img_w,
+                height=img_h,
+                mask='auto'
+            )
+
+            y_start = h - 80 - img_h - 20
+
+    except Exception as e:
+        current_app.logger.warning(f"[PDF] Error cargando imagen: {e}")
+
+    # Datos debajo de la imagen (o más arriba si no hay)
+    p.setFont("Helvetica", 12)
+    y = y_start
+    p.drawString(40, y, f"ID: {producto.id_producto}")
+    y -= 20
+    p.drawString(40, y, f"Descripción: {producto.descripcion}")
+    y -= 20
+    p.drawString(40, y, f"Precio: ${producto.costo:.2f}")
+    y -= 20
+    p.drawString(40, y, f"Estatus: {producto.stock.capitalize()}")
+
+    # Finalizar PDF
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        download_name=f"producto_{producto.id_producto}.pdf",
+        as_attachment=True,
+        mimetype='application/pdf'
+    )
 
 
 @app.route('/contenido/sugerencias', methods=['GET','POST'])
