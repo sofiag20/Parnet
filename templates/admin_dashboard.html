@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dashboard • Admin</title>
+        <style>
+            .chart-container { text-align:center; margin-bottom:2rem; }
+            .chart-container img { max-width:90%; height:auto; border:1px solid #ccc; }
+        </style>
+    </head>
+    <body>
+        <h1>🔎 Dashboard de Registros</h1>
+
+        <div class="chart-container">
+            <h2>Servicios registrados</h2>
+            <img src="{{ url_for('services_chart') }}" alt="Gráfico Servicios">
+        </div>
+
+        <div class="chart-container">
+            <h2>Productos por estatus</h2>
+            <img src="{{ url_for('products_chart') }}" alt="Gráfico Productos">
+        </div>
+    </body>
+</html>

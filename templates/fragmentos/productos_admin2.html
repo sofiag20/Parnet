@@ -1,6 +1,11 @@
 <section class="admin-dashboard">
     <h2>Gestión de Productos</h2>
 
+    <div class="export-buttons" style="margin-bottom: 1rem;">
+        <a href="{{ url_for('reporte_productos_pdf') }}" class="btn-export">📄 Exportar PDF</a>
+        <a href="{{ url_for('reporte_productos_excel') }}" class="btn-export">📥 Exportar Excel</a>
+    </div>
+    
     <!-- Formulario de alta -->
     <form id="form-agregar-producto"
             action="{{ url_for('crear_producto') }}"

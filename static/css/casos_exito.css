@@ -1,0 +1,78 @@
+/* static/css/casos_exito.css */
+
+/* Sección principal */
+.casos-exito-section {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background: #fefefe;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Título de la sección */
+.casos-exito-section h1 {
+    font-size: 2rem;
+    color: #003366;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Cada caso de éxito */
+.caso-exito {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Título de cada artículo */
+.caso-exito h2 {
+    font-size: 1.5rem;
+    color: #00509e;
+    margin-bottom: 0.5rem;
+}
+
+/* Párrafo descriptivo */
+.caso-exito p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333333;
+}
+
+/* Último caso sin borde inferior */
+.caso-exito:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 2rem;
+}
+
+/* Llamada a la acción */
+.cta-casos {
+    text-align: center;
+    margin-top: 2rem;
+}
+.cta-casos p {
+    font-size: 1.1rem;
+    color: #004080;
+}
+.cta-casos a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.cta-casos a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .casos-exito-section {
+        padding: 1rem;
+    }
+    .caso-exito h2 {
+        font-size: 1.3rem;
+    }
+    .cta-casos p {
+        font-size: 1rem;
+    }
+}

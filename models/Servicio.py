@@ -1,4 +1,4 @@
-from App import db
+from models.Database import db
 
 class Servicio(db.Model):
     __tablename__ = 'servicio'

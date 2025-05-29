@@ -1,0 +1,47 @@
+/* ----- Contenedor de botones de administración ----- */
+.admin-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+/* ----- Estilos comunes para los botones ----- */
+.admin-dashboard button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;               /* espacio entre icono y texto */
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+/* ----- Hover / Active ----- */
+.admin-dashboard button:hover {
+    filter: brightness(0.9);
+}
+.admin-dashboard button:active {
+    transform: translateY(1px);
+}
+
+/* ----- Botón Productos ----- */
+.admin-dashboard button.productos {
+    background-color: #17a2b8;
+}
+.admin-dashboard button.productos:hover {
+    background-color: #117a8b;
+}
+
+/* ----- Botón Sugerencias ----- */
+.admin-dashboard button.sugerencias {
+    background-color: #28a745;
+}
+.admin-dashboard button.sugerencias:hover {
+    background-color: #1e7e34;
+}
+

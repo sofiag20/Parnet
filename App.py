@@ -11,10 +11,15 @@ from PIL import Image
 import pandas as pd
 import logging
 from reportlab.lib.utils import ImageReader
+from collections import Counter
+import matplotlib.pyplot as plt
+from sqlalchemy import func
+from datetime import date
+
 
 from flask import (
     Flask, render_template, redirect, url_for,
-    session, request, current_app, flash,send_file, abort
+    session, request, current_app, flash,send_file, abort,jsonify,Response
 )
 from flask_socketio import SocketIO, emit
 from models.Database import Database
@@ -24,7 +29,10 @@ from models.Usuario   import Usuario
 from models.Producto  import Producto
 from models.Contacto import ContactoForm
 from email.mime.text import MIMEText
-from models.Sugerencia import Sugerencia, SugerenciaForm
+from models.Sugerencia import Sugerencia,SugerenciaForm
+from models.Servicio import Servicio
+from forms.solicitud_servicio import ServicioForm
+from models.Area import Area
 
 # Instancia única de SQLAlchemy
 db = Database.get_instance()
@@ -94,10 +102,20 @@ def contenido_quienes():
 def contenido_clientes():
     return render_template("fragmentos/clientes.html")
 
+
 # Páginas completas estáticas
 @app.route("/servicios")
 def servicios():
     return render_template("servicios.html")
+
+@app.route("/contenido/socios")
+def contenido_socios():
+    return render_template("fragmentos/socios.html")
+
+@app.route("/contenido/casos_exito")
+def contenido_casos_exito():
+    return render_template("fragmentos/casos_exito.html")
+
 
 @app.route("/contenido/productos")
 def productos():
@@ -292,7 +310,7 @@ def export_producto_pdf(id):
 
     # Título
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(40, h - 50, f"Producto: {producto.descripcion}")
+    p.drawString(40, h - 50, f"Ficha Técnica – {producto.descripcion}")
 
     # Punto de inicio del texto
     y_start = h - 100
@@ -366,6 +384,85 @@ def export_producto_pdf(id):
         mimetype='application/pdf'
     )
 
+@app.route('/admin/productos/reporte')
+def reporte_productos_pdf():
+    # 1) Consulta todos los productos
+    productos = Producto.query.order_by(Producto.id_producto).all()
+
+    # 2) Prepara canvas
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    # 3) Título
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(40, height - 50, "Reporte de Productos")
+
+    # 4) Cabeceras de tabla
+    y = height - 80
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(40, y, "ID")
+    p.drawString(100, y, "Descripción")
+    p.drawString(350, y, "Costo")
+    p.drawString(430, y, "Estatus")
+
+    # 5) Filas
+    p.setFont("Helvetica", 11)
+    y -= 20
+    for prod in productos:
+        if y < 40:
+            p.showPage()
+            y = height - 50
+        p.drawString(40, y, str(prod.id_producto))
+        p.drawString(100, y, prod.descripcion[:30])  # recortamos a 30 chars
+        p.drawString(350, y, f"${prod.costo:.2f}")
+        p.drawString(430, y, prod.stock.capitalize())
+        y -= 18
+
+    # 6) Finaliza
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        download_name="reporte_productos.pdf",
+        as_attachment=True,
+        mimetype="application/pdf"
+    )
+
+
+@app.route('/admin/productos/export_excel')
+def reporte_productos_excel():
+    # 1) Consulta todos los productos
+    productos = Producto.query.order_by(Producto.id_producto).all()
+
+    # 2) Construye un DataFrame
+    datos = []
+    for p in productos:
+        datos.append({
+            'ID': p.id_producto,
+            'Descripción': p.descripcion,
+            'Costo': float(p.costo),
+            'Stock': 'En existencia' if p.stock == 'existencia' else 'Agotado'
+        })
+    df = pd.DataFrame(datos)
+
+    # 3) Escribe en un buffer en memoria
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        df.to_excel(writer,
+                    index=False,
+                    sheet_name='Productos')
+    buffer.seek(0)
+
+    # 4) Envíalo como descarga
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name='reporte_productos.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
 @app.route('/contenido/sugerencias', methods=['GET','POST'])
 def contenido_sugerencias():
@@ -525,6 +622,24 @@ def export_sugerencias():
     # Formato no soportado
     else:
         return "Formato no soportado", 400
+
+@app.route('/contenido/servicios/solicitud', methods=['GET', 'POST'])
+def contenido_solicitud_servicio():
+    form = ServicioForm()
+    form.area.choices = [(a.id_area, a.des_area) for a in Area.query.order_by(Area.des_area).all()]
+
+    if form.validate_on_submit():
+        nueva = Servicio(
+            fecha   = date.today(),
+            detalle = form.detalle.data,
+            id_area = form.area.data
+        )
+        db.session.add(nueva)
+        db.session.commit()
+        flash('¡Tu solicitud se ha enviado con éxito!', 'success')
+        return redirect(url_for('contenido_solicitud_servicio'))
+
+    return render_template('fragmentos/solicitud_servicio.html', form=form)
 
 # ——————————————————————————————
 # EJECUCIÓN

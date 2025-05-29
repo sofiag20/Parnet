@@ -30,12 +30,11 @@
     <a href="#" onclick="cargarContenido('principal')" class="tab-link">Página Principal</a>
     <a href="#" onclick="cargarContenido('quienes')" class="tab-link">¿Quiénes Somos?</a>
     <a href="#" onclick="cargarContenido('clientes')" class="tab-link">Clientes</a>
-
-    <a href="{{ url_for('servicios') }}" class="tab-link">Servicios</a>
+    <a href="#" onclick="cargarContenido('servicios/solicitud')" class="tab-link">Solicitar Servicio</a>
     <a href="#" onclick="cargarContenido('productos')" class="tab-link">Productos</a>
-    <a href="#" class="tab-link">Casos De Éxito</a>
+    <a href="#" onclick="cargarContenido('casos_exito')" class="tab-link">Casos de Éxito</a>
     <a href="#" onclick="cargarContenido('contacto')" class="tab-link">Contacto</a>
-    <a href="#" class="tab-link">Socios</a>
+    <a href="#" onclick="cargarContenido('socios')" class="tab-link">Socios</a>
 </nav>
 
 
@@ -129,7 +128,7 @@
         <a href="#" onclick="cargarContenido('contenido/clientes')" class="tab-link">Clientes</a> |
         <a href="{{ url_for('servicios') }}">Servicios</a> |
         <a href="#" onclick="cargarContenido('contenido/producto')" class="tab-link">¿Quiénes Somos?</a>
-        <a href="#">Casos De Éxito</a> |
+        <a href="#" onclick="cargarContenido('contenido/casos_exito')" class="tab-link">Casos Exito</a>
         <a href="#" onclick="cargarContenido('contenido/contacto')" class="tab-link">Contacto</a>
         <a href="#">Soporte</a>
         </div>

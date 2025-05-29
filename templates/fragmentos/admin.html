@@ -3,8 +3,11 @@
     <h2>Panel de Administración</h2>
     <p>Bienvenido, administrador. Aquí puedes gestionar el sistema.</p>
 
-    <button onclick="cargarContenido('productos_admin2')">🛒 Productos</button>
-    <button onclick="cargarContenido('sugerencias_admin')">💡 Sugerencias</button>
+    <button class="productos"  onclick="cargarContenido('productos_admin2')">🛒 Productos</button>
+    <button class="sugerencias" onclick="cargarContenido('sugerencias_admin')">💡 Sugerencias</button>
+    <button onclick="window.location='{{ url_for('admin_dashboard') }}'">📊 Dashboard</button>
+
 </section>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 

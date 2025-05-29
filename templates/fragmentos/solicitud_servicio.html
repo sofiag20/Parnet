@@ -1,0 +1,39 @@
+<div class="solicitud-section">
+    <h1>Solicitud de Servicio</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for cat,msg in messages %}
+                    <div class="alert alert-{{ cat }}">{{ msg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('contenido_solicitud_servicio') }}" class="solicitud-form">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+        {{ form.area.label }}<br>
+        {{ form.area(class="form-control") }}
+        {% for e in form.area.errors %}<small class="form-error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.detalle.label }}<br>
+            {{ form.detalle(class="form-control", rows=4, placeholder="Describa el servicio que requiere...") }}
+            {% for e in form.detalle.errors %}<small class="form-error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group recaptcha">
+            {{ form.recaptcha }}
+            {% for e in form.recaptcha.errors %}<small class="form-error">{{ e }}</small>{% endfor %}
+        </div>
+
+        {{ form.submit(class="btn-submit") }}
+    </form>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/solicitud_servicio.css') }}">

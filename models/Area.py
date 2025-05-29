@@ -1,4 +1,4 @@
-from App import db
+from models.Database import db
 
 class Area(db.Model):
     __tablename__ = 'area'

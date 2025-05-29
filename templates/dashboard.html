@@ -1,0 +1,71 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        padding: 1rem;
+        }
+        .chart-card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+
+
+{% block content %}
+    <h2>Dashboard Administrativo</h2>
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3>Tipos de Servicio</h3>
+            <canvas id="chart-servicios"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Productos por Stock</h3>
+            <canvas id="chart-productos"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // 1) Gráfico de Servicios
+        fetch('{{ url_for("data_servicios") }}')
+            .then(r => r.json())
+            .then(({labels, data}) => {
+                new Chart(document.getElementById('chart-servicios'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                    label: 'Cantidad',
+                    data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        });
+
+        // 2) Gráfico de Productos
+        fetch('{{ url_for("data_productos") }}')
+            .then(r => r.json())
+            .then(({labels, data}) => {
+                new Chart(document.getElementById('chart-productos'), {
+                type: 'pie',
+                data: {
+                    labels,
+                    datasets: [{
+                    label: 'Productos',
+                    data,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ]
+                    }]
+                }
+            });
+        });
+</script>
