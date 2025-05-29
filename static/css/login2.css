@@ -1,49 +1,79 @@
 /* static/css/login2.css */
-body {
-  margin: 0; font-family: sans-serif;
-  background: #f0f2f5;
-  display: flex; align-items: center; justify-content: center;
-  height: 100vh;
-}
 
+/* Contenedor general de login */
 .login2-container {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  width: 300px;
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
 }
 
+/* Título */
 .login2-container h2 {
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #003366;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
 }
 
-.login2-container label {
-  font-size: 0.9rem; margin-top: 0.5rem;
+/* Grupo de campo */
+.form-group {
+    margin-bottom: 1rem;
 }
 
-.login2-container input {
-  width: 100%; padding: 0.5rem; margin-top: 0.25rem;
-  border: 1px solid #ccc; border-radius: 4px;
+/* Etiqueta */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #444;
 }
 
-.login2-container button {
-  width: 100%; padding: 0.6rem; margin-top: 1rem;
-  background: #004080; color: white; border: none;
-  border-radius: 4px; cursor: pointer;
+/* Inputs */
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
 }
 
-.login2-container button:hover {
-  background: #0066cc;
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
+/* Botón de submit */
+.login2-container button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.login2-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Enlace de volver */
 .login2-container .volver {
-  display: block; text-align: center; margin-top: 1rem;
-  color: #004080; text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #007bff;
+    text-decoration: none;
 }
 
 .login2-container .volver:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }

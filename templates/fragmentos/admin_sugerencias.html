@@ -1,0 +1,39 @@
+<section class="admin-sugerencias-container">
+    <h2>Listado de Sugerencias</h2>
+
+    {# Botones de export #}
+    <div class="export-buttons">
+        <a href="{{ url_for('export_sugerencias', fmt='excel') }}" class="btn-export">📥 Exportar a Excel</a>
+        <a href="{{ url_for('export_sugerencias', fmt='pdf') }}"   class="btn-export">📄 Exportar a PDF</a>
+    </div>
+
+    {% if sugerencias %}
+        <table class="tabla-sugerencias">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Mensaje</th>
+                    <th>Fecha</th>
+                    </tr>
+            </thead>
+        <tbody>
+            {% for s in sugerencias %}
+            <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ s.nombre }}</td>
+                <td>{{ s.mensaje|e }}</td>
+                <td>{{ s.creado_el.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
+        {# Paginación #}
+        <div class="pagination-wrapper">
+            {{ pagination.links }}
+        </div>
+    {% else %}
+        <p>No hay sugerencias registradas.</p>
+    {% endif %}
+</section>

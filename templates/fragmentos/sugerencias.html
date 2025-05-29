@@ -1,6 +1,6 @@
 <div class="sugerencias-container">
     <h1>Envíanos tu sugerencia</h1>
-    <form method="POST" action="{{ url_for('sugerencias') }}">
+    <form method="POST" action="{{ url_for('contenido_sugerencias') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.nombre.label }}<br>

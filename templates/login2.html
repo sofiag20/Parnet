@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Administración - PARNET</title>
-  <!-- Nota el uso de filename= -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login2.css') }}">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>Administración - PARNET</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login2.css') }}">
 </head>
 <body>
-  <div class="login2-container">
-    <h2>Administración</h2>
-    <form action="{{ url_for('login') }}" method="POST">
-      <label for="user">Usuario</label>
-      <input type="text" name="user" id="user" required>
-      <label for="pw">Contraseña</label>
-      <input type="password" name="pw" id="pw" required>
-      <button type="submit">Entrar</button>
-    </form>
-    <a href="{{ url_for('index') }}" class="volver">← Volver al Inicio</a>
-  </div>
+    <div class="login2-container">
+        <h2>Administración</h2>
+        <form action="{{ url_for('login') }}" method="POST">
+        <div class="form-group">
+            <label for="user">Usuario</label><br>
+            <input type="text" name="user" id="user" required>
+        </div>
+        <div class="form-group">
+            <label for="pw">Contraseña</label><br>
+            <input type="password" name="pw" id="pw" required>
+        </div>
+        <button type="submit">Entrar</button>
+        </form>
+        <a href="{{ url_for('index') }}" class="volver">← Volver al Inicio</a>
+    </div>
 </body>
 </html>

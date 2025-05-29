@@ -1,0 +1,11 @@
+{% block title %}Contáctanos{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contacto.css') }}">
+{% endblock %}
+
+{% block content %}
+    {# Incluye el fragmento que ya tienes en fragmentos/contacto.html #}
+    {% include 'fragmentos/contacto.html' %}
+{% endblock %}
+

@@ -1,8 +1,16 @@
 import smtplib   
 import os
+from flask_paginate import Pagination, get_page_parameter
+from io import BytesIO
+import pandas as pd
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
+import pandas as pd
+
 from flask import (
     Flask, render_template, redirect, url_for,
-    session, request, current_app, flash
+    session, request, current_app, flash,send_file
 )
 from flask_socketio import SocketIO, emit
 from models.Database import Database
@@ -98,10 +106,14 @@ def productos():
         productos = Producto.query.all()
     return render_template('fragmentos/producto.html', productos=productos)
 
-@app.route('/contenido/contacto', methods=['GET', 'POST'])
+@app.route('/contenido/contacto', methods=['GET','POST'])
 def contenido_contacto():
     form = ContactoForm()
+    if form.validate_on_submit():
+        # envío de correo…
+        flash('¡Tu mensaje ha sido enviado con éxito!', 'success')
     return render_template('fragmentos/contacto.html', form=form)
+
 
 @app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
@@ -195,6 +207,10 @@ def logout():
     session.clear()
     return redirect(url_for("login2"))
 
+@app.route('/contenido/login2')
+def contenido_login2():
+    return render_template('fragmentos/login2.html')
+
 # ——————————————————————————————
 # ADMINISTRACIÓN DE PRODUCTOS (CRUD EN PÁGINA COMPLETA)
 # ——————————————————————————————
@@ -239,13 +255,20 @@ def eliminar_producto(id):
     db.session.commit()
     return redirect(url_for("productos_admin2"))
 
+@app.route('/contenido/productos_admin2')
+def contenido_productos_admin2():
+    if session.get("rol") != "admin":
+        return redirect(url_for("login2"))
+    productos = Producto.query.all()
+    return render_template('fragmentos/productos_admin2.html', productos=productos)
 
 
 
-@app.route('/sugerencias', methods=['GET', 'POST'])
-def sugerencias():
+@app.route('/contenido/sugerencias', methods=['GET','POST'])
+def contenido_sugerencias():
     form = SugerenciaForm()
     if form.validate_on_submit():
+        # Guardar en BD...
         nueva = Sugerencia(
             nombre  = form.nombre.data,
             mensaje = form.mensaje.data
@@ -253,19 +276,152 @@ def sugerencias():
         db.session.add(nueva)
         db.session.commit()
         flash('¡Gracias por tu sugerencia!', 'success')
-        return redirect(url_for('sugerencias'))
-    return render_template('sugerencias.html', form=form)
-
-@app.route('/contenido/sugerencias')
-def contenido_sugerencias():
-    form = SugerenciaForm()
+        # Re–renderiza el mismo fragmento para mostrar el flash
     return render_template('fragmentos/sugerencias.html', form=form)
 
 @app.route('/contenido/sugerencias_admin')
 def contenido_sugerencias_admin():
-    sugerencias = Sugerencia.query.order_by(Sugerencia.creado_el.desc()).all()
-    return render_template('fragmentos/admin_sugerencias.html', sugerencias=sugerencias)
+    if session.get('rol') != 'admin':
+        return redirect(url_for('login2'))
 
+    # Lee ?page= de la URL, por defecto 1
+    page     = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 10
+
+    # Consulta paginada
+    query       = Sugerencia.query.order_by(Sugerencia.creado_el.desc())
+    total       = query.count()
+    sugerencias = query.offset((page-1)*per_page).limit(per_page).all()
+
+    # Construye el paginador
+    pagination = Pagination(
+        page=page,
+        per_page=per_page,
+        total=total,
+        css_framework='bootstrap5',
+        href=url_for('contenido_sugerencias_admin') + '?page={0}'
+    )
+
+    # Renderiza tu fragmento, pasando SÍ o SÍ both variables
+    return render_template(
+        'fragmentos/admin_sugerencias.html',
+        sugerencias=sugerencias,
+        pagination=pagination
+    )
+
+# 1) Listado paginado de sugerencias
+@app.route('/admin/sugerencias')
+def listar_sugerencias():
+    # Restringir a admin
+    if session.get('rol') != 'admin':
+        return redirect(url_for('login2'))
+
+    # Parámetros de paginación
+    page     = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 10
+
+    # Consulta base
+    query       = Sugerencia.query.order_by(Sugerencia.creado_el.desc())
+    total       = query.count()
+    sugerencias = query.offset((page - 1) * per_page).limit(per_page).all()
+
+    # Paginador para el template
+    pagination = Pagination(page=page,
+                            per_page=per_page,
+                            total=total,
+                            css_framework='bootstrap5')
+
+    return render_template('admin_sugerencias.html',
+                        sugerencias=sugerencias,
+                        pagination=pagination)
+
+
+
+@app.route('/admin/sugerencias/export')
+def export_sugerencias():
+    # Restringir a admin
+    if session.get('rol') != 'admin':
+        return redirect(url_for('login2'))
+
+    fmt = request.args.get('fmt', 'excel').lower()
+    all_sug = Sugerencia.query.order_by(Sugerencia.creado_el.desc()).all()
+
+    # === Excel ===
+    if fmt == 'excel':
+        # Prepara lista de dicts
+        data = [{
+            'ID':      s.id,
+            'Nombre':  s.nombre,
+            'Mensaje': s.mensaje,
+            'Fecha':   s.creado_el.strftime('%Y-%m-%d %H:%M')
+        } for s in all_sug]
+
+        # Crea DataFrame
+        df = pd.DataFrame(data)
+
+        # Escribe a Excel en memoria
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Sugerencias')
+            ws = writer.sheets['Sugerencias']
+            # Ajusta anchos de columna
+            for idx, col in enumerate(df.columns):
+                max_len = max(df[col].astype(str).map(len).max(), len(col)) + 2
+                ws.set_column(idx, idx, max_len)
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name='sugerencias.xlsx',
+            as_attachment=True,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+
+    # === PDF via ReportLab ===
+    elif fmt == 'pdf':
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+
+        # Título
+        p.setFont("Helvetica-Bold", 14)
+        p.drawString(40, height - 40, "Listado de Sugerencias")
+
+        # Encabezados
+        y = height - 80
+        p.setFont("Helvetica-Bold", 10)
+        p.drawString(40, y, "ID")
+        p.drawString(80, y, "Nombre")
+        p.drawString(220, y, "Mensaje")
+        p.drawString(500, y, "Fecha")
+
+        # Filas
+        p.setFont("Helvetica", 9)
+        y -= 20
+        for s in all_sug:
+            if y < 40:
+                p.showPage()
+                y = height - 40
+            p.drawString(40, y, str(s.id))
+            p.drawString(80, y, s.nombre[:20])
+            msg = (s.mensaje[:30] + '...') if len(s.mensaje) > 30 else s.mensaje
+            p.drawString(220, y, msg)
+            p.drawString(500, y, s.creado_el.strftime('%Y-%m-%d'))
+            y -= 15
+
+        p.save()
+        buffer.seek(0)
+
+        return send_file(
+            buffer,
+            download_name='sugerencias.pdf',
+            as_attachment=True,
+            mimetype='application/pdf'
+        )
+
+    # Formato no soportado
+    else:
+        return "Formato no soportado", 400
 
 # ——————————————————————————————
 # EJECUCIÓN

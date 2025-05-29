@@ -18,25 +18,42 @@ function cargarContenido(ruta) {
         .catch(err => console.error("Error al cargar contenido:", err));
 }
 
-// Delegación: escucha submits en el contenedor donde cargas los fragmentos
+// Delegación: escucha submits en #contenido
 document.getElementById("contenido").addEventListener("submit", e => {
     const form = e.target;
-    // Sólo interceptamos los formularios de edición
-    if (form.matches('form[action^="/admin/producto/editar"]')) {
+
+  // Crear producto
+    if (form.matches('#form-agregar-producto')) {
         e.preventDefault();
         fetch(form.action, {
-        method: "POST",
-        body: new FormData(form)
+            method: "POST",
+            body: new FormData(form)
         })
-        .then(res => res.json())
-        .then(data => {
-        if (data.success) {
-            // Recarga sólo el fragmento de productos
-            cargarContenido("productos_admin");
-        } else {
-            alert("Error al editar: " + data.error);
-        }
+        .then(() => cargarContenido("productos_admin2"))
+        .catch(() => alert("Error de red al crear"));
+    }
+
+    // Editar producto
+    else if (form.matches('form[action^="/admin/producto/editar"]')) {
+        e.preventDefault();
+        fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+            redirect: 'follow'
         })
+        .then(() => cargarContenido("productos_admin2"))
         .catch(() => alert("Error de red al editar"));
     }
+
+    // Eliminar producto
+    else if (form.matches('form[action^="/admin/producto/eliminar"]')) {
+        e.preventDefault();
+            fetch(form.action, {
+            method: "POST",
+            body: new FormData(form)
+        })
+        .then(() => cargarContenido("productos_admin2"))
+        .catch(() => alert("Error de red al eliminar"));
+    }
 });
+

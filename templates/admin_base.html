@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>{% block title %}Panel Admin{% endblock %}</title>
+
+    {# CSS global de admin #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/productos_admin2.css') }}">
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('logout') }}">← Cerrar sesión</a>
+    </header>
+
+    <div class="admin-layout" style="display:flex;">
+        <aside class="admin-menu" style="width:200px; padding:1rem;">
+            <button onclick="cargarContenido('productos_admin2')">🛒 Productos</button><br><br>
+            <button onclick="cargarContenido('sugerencias_admin')">💡 Sugerencias</button>
+        </aside>
+
+        <main id="contenido" class="admin-content" style="flex:1; padding:1rem;">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/contenido.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
